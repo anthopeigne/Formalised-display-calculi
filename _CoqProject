@@ -1,0 +1,4 @@
+-R theories/folder1 Folder1
+-R theories/folder2 Folder1
+-R theories/Folder3 Folder3
+theories
