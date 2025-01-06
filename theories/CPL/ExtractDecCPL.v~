@@ -1,4 +1,0 @@
-Require Import DecCPL.
-
-Require Extraction.
-Require Import Coq.extraction.ExtrOcamlNativeString.

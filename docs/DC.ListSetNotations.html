@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="https://github.com/ianshil/FOBiInt">Project Page</a>
+      <a href="./indexpage.html"> Index </a>
+      <a href="./toc.html"> Table of Contents </a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<h1 class="libtitle">DC.ListSetNotations</h1>
+
+<div class="code">
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#"><span class="id" title="library">List</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.ListSet.html#"><span class="id" title="library">ListSet</span></a>.<br/>
+<span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#ListNotations"><span class="id" title="module">ListNotations</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.EqDec.html#"><span class="id" title="library">EqDec</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Section</span> <a id="MSET_SET" class="idref" href="#MSET_SET"><span class="id" title="section">MSET_SET</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Context</span> {<a id="A:1" class="idref" href="#A:1"><span class="id" title="binder">A</span></a> : <span class="id" title="keyword">Type</span>}.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Context</span> `{<a id="AED:2" class="idref" href="#AED:2"><span class="id" title="binder">AED</span></a> : <a class="idref" href="DC.EqDec.html#EqDec"><span class="id" title="class">EqDec</span></a> <a class="idref" href="DC.ListSetNotations.html#MSET_SET.A"><span class="id" title="variable">A</span></a>}.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="count" class="idref" href="#count"><span class="id" title="definition">count</span></a> := <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#count_occ"><span class="id" title="definition">count_occ</span></a> <a class="idref" href="DC.EqDec.html#eqdec"><span class="id" title="method">eqdec</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="erase" class="idref" href="#erase"><span class="id" title="definition">erase</span></a> := <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.ListSet.html#set_remove"><span class="id" title="definition">set_remove</span></a> <a class="idref" href="DC.EqDec.html#eqdec"><span class="id" title="method">eqdec</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="set_eq" class="idref" href="#set_eq"><span class="id" title="definition">set_eq</span></a> (<a id="l:3" class="idref" href="#l:3"><span class="id" title="binder">l</span></a> <a id="l':4" class="idref" href="#l':4"><span class="id" title="binder">l'</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="DC.ListSetNotations.html#MSET_SET.A"><span class="id" title="variable">A</span></a>) : <span class="id" title="keyword">Prop</span> := <span class="id" title="keyword">forall</span> <a id="x:5" class="idref" href="#x:5"><span class="id" title="binder">x</span></a>, <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#In"><span class="id" title="definition">In</span></a> <a class="idref" href="DC.ListSetNotations.html#x:5"><span class="id" title="variable">x</span></a> <a class="idref" href="DC.ListSetNotations.html#l:3"><span class="id" title="variable">l</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'&lt;-&gt;'_x"><span class="id" title="notation">&lt;-&gt;</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#In"><span class="id" title="definition">In</span></a> <a class="idref" href="DC.ListSetNotations.html#x:5"><span class="id" title="variable">x</span></a> <a class="idref" href="DC.ListSetNotations.html#l':4"><span class="id" title="variable">l'</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="mset_incl" class="idref" href="#mset_incl"><span class="id" title="definition">mset_incl</span></a> (<a id="l:6" class="idref" href="#l:6"><span class="id" title="binder">l</span></a> <a id="l':7" class="idref" href="#l':7"><span class="id" title="binder">l'</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="DC.ListSetNotations.html#MSET_SET.A"><span class="id" title="variable">A</span></a>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <a id="x:8" class="idref" href="#x:8"><span class="id" title="binder">x</span></a>, <a class="idref" href="DC.ListSetNotations.html#count"><span class="id" title="definition">count</span></a> <a class="idref" href="DC.ListSetNotations.html#l:6"><span class="id" title="variable">l</span></a> <a class="idref" href="DC.ListSetNotations.html#x:8"><span class="id" title="variable">x</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Peano.html#cb53cf0ee22c036a03b4a9281c68b5a3"><span class="id" title="notation">&lt;=</span></a> <a class="idref" href="DC.ListSetNotations.html#count"><span class="id" title="definition">count</span></a> <a class="idref" href="DC.ListSetNotations.html#l':7"><span class="id" title="variable">l'</span></a> <a class="idref" href="DC.ListSetNotations.html#x:8"><span class="id" title="variable">x</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="mset_eq" class="idref" href="#mset_eq"><span class="id" title="definition">mset_eq</span></a> (<a id="l:9" class="idref" href="#l:9"><span class="id" title="binder">l</span></a> <a id="l':10" class="idref" href="#l':10"><span class="id" title="binder">l'</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Datatypes.html#list"><span class="id" title="inductive">list</span></a> <a class="idref" href="DC.ListSetNotations.html#MSET_SET.A"><span class="id" title="variable">A</span></a>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <a id="x:11" class="idref" href="#x:11"><span class="id" title="binder">x</span></a>, <a class="idref" href="DC.ListSetNotations.html#count"><span class="id" title="definition">count</span></a> <a class="idref" href="DC.ListSetNotations.html#l:9"><span class="id" title="variable">l</span></a> <a class="idref" href="DC.ListSetNotations.html#x:11"><span class="id" title="variable">x</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="DC.ListSetNotations.html#count"><span class="id" title="definition">count</span></a> <a class="idref" href="DC.ListSetNotations.html#l':10"><span class="id" title="variable">l'</span></a> <a class="idref" href="DC.ListSetNotations.html#x:11"><span class="id" title="variable">x</span></a>.<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="DC.ListSetNotations.html#MSET_SET"><span class="id" title="section">MSET_SET</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> <a id="b018a66e1e5f3a3e69df51e53be82ded" class="idref" href="#b018a66e1e5f3a3e69df51e53be82ded"><span class="id" title="notation">&quot;</span></a>x ∈ S" := (<a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#In"><span class="id" title="definition">In</span></a> <span class="id" title="var">x</span> <span class="id" title="var">S</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 75).<br/>
+<span class="id" title="keyword">Notation</span> <a id="d92418d8275ab059111c0bf2db0bfc36" class="idref" href="#d92418d8275ab059111c0bf2db0bfc36"><span class="id" title="notation">&quot;</span></a>x ∉ S" := (<a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">~</span></a> <span class="id" title="var">x</span> <a class="idref" href="DC.ListSetNotations.html#b018a66e1e5f3a3e69df51e53be82ded"><span class="id" title="notation">∈</span></a> <span class="id" title="var">S</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 75).<br/>
+<span class="id" title="keyword">Notation</span> <a id="47ab0ac71cf2dac51fa901d3dcced8db" class="idref" href="#47ab0ac71cf2dac51fa901d3dcced8db"><span class="id" title="notation">&quot;</span></a>S ≃ T" := (<a class="idref" href="DC.ListSetNotations.html#set_eq"><span class="id" title="definition">set_eq</span></a> <span class="id" title="var">S</span> <span class="id" title="var">T</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 70).<br/>
+<span class="id" title="keyword">Notation</span> <a id="db79eb3062cfc9024d8dda07dffe69e9" class="idref" href="#db79eb3062cfc9024d8dda07dffe69e9"><span class="id" title="notation">&quot;</span></a>S ⊆ T" := (<a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#incl"><span class="id" title="definition">incl</span></a> <span class="id" title="var">S</span> <span class="id" title="var">T</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 70).<br/>
+<span class="id" title="keyword">Notation</span> <a id="8f9238d4eefe0b5c60a6c98165047666" class="idref" href="#8f9238d4eefe0b5c60a6c98165047666"><span class="id" title="notation">&quot;</span></a>S ≡ T" := (<a class="idref" href="DC.ListSetNotations.html#mset_eq"><span class="id" title="definition">mset_eq</span></a> <span class="id" title="var">S</span> <span class="id" title="var">T</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 70).<br/>
+<span class="id" title="keyword">Notation</span> <a id="4eff74514fb96e92ef965bc94182a996" class="idref" href="#4eff74514fb96e92ef965bc94182a996"><span class="id" title="notation">&quot;</span></a>S ⫅ T" := (<a class="idref" href="DC.ListSetNotations.html#mset_incl"><span class="id" title="definition">mset_incl</span></a> <span class="id" title="var">S</span> <span class="id" title="var">T</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 70).<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr/">coqdoc</a> and improved with <a href="https://github.com/tebbi/coqdocjs">CoqdocJS</a>
+</div>
+</div>
+</body>
+
+</html>

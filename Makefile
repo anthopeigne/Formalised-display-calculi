@@ -5,7 +5,7 @@ COQDOCFLAGS:= \
   --index indexpage --no-lib-name --parse-comments \
   --with-header $(EXTRA_DIR)/header.html --with-footer $(EXTRA_DIR)/footer.html
 export COQDOCFLAGS
-PUBLIC_URL="https://YOURGITPSEUDO.github.io/YOURREPONAME"
+PUBLIC_URL="https://anthopeigne.github.io/Formalised-display-calculi"
 SUBDIR_ROOTS := theories
 DIRS := . $(shell find $(SUBDIR_ROOTS) -type d)
 BUILD_PATTERNS := *.vok *.vos *.glob *.vo *.aux

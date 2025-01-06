@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="https://github.com/ianshil/FOBiInt">Project Page</a>
+      <a href="./indexpage.html"> Index </a>
+      <a href="./toc.html"> Table of Contents </a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<h1 class="libtitle">DC.ExtractDecCPL</h1>
+
+<div class="code">
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Strings.String.html#"><span class="id" title="library">String</span></a>.<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">string_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.EqDec.html#"><span class="id" title="library">EqDec</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Tactics.html#"><span class="id" title="library">Tactics</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Utils.html#"><span class="id" title="library">Utils</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Lang.html#"><span class="id" title="library">Lang</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Sequents.html#"><span class="id" title="library">Sequents</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Substitutions.html#"><span class="id" title="library">Substitutions</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Derivation.html#"><span class="id" title="library">Derivation</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Derivability.html#"><span class="id" title="library">Derivability</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Deletion.html#"><span class="id" title="library">Deletion</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Reduction.html#"><span class="id" title="library">Reduction</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Displequiv.html#"><span class="id" title="library">Displequiv</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Decidability.html#"><span class="id" title="library">Decidability</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Rules.html#"><span class="id" title="library">Rules</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.PL.html#"><span class="id" title="library">PL</span></a>.<br/>
+<span class="id" title="keyword">Import</span> <a class="idref" href="DC.PL.html#CPLNotations"><span class="id" title="module">CPLNotations</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.DecCPL.html#"><span class="id" title="library">DecCPL</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.extraction.Extraction.html#"><span class="id" title="library">Extraction</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.extraction.ExtrOcamlNativeString.html#"><span class="id" title="library">Coq.extraction.ExtrOcamlNativeString</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <a id="lem" class="idref" href="#lem"><span class="id" title="definition">lem</span></a> : @<a class="idref" href="DC.Sequents.html#sequent"><span class="id" title="inductive">sequent</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <a class="idref" href="DC.PL.html#CPL"><span class="id" title="instance">CPL</span></a> := <a class="idref" href="DC.PL.html#CPL.I"><span class="id" title="constructor">I</span></a> <a class="idref" href="DC.Sequents.html#417d4f8793ef9552198c889adf95d0f2"><span class="id" title="notation">⊢</span></a> <a class="idref" href="DC.PL.html#774ce13660cc12896d3a5bb224ea9c39"><span class="id" title="notation">£(</span></a><a class="idref" href="DC.PL.html#c001995c00846a9d55583045471881d3"><span class="id" title="notation">?</span></a>"A" <a class="idref" href="DC.PL.html#42f2cc0a8cfc3c8591557964d21f8d5f"><span class="id" title="notation">∨</span></a> <a class="idref" href="DC.PL.html#e51107f384bd683975fe2146c52ba37e"><span class="id" title="notation">¬</span></a> <a class="idref" href="DC.PL.html#c001995c00846a9d55583045471881d3"><span class="id" title="notation">?</span></a>"A"<a class="idref" href="DC.PL.html#774ce13660cc12896d3a5bb224ea9c39"><span class="id" title="notation">)</span></a>.<br/>
+
+<br/>
+<span class="comment">(*<br/>
+Extract&nbsp;Inductive&nbsp;list&nbsp;=&gt;&nbsp;"list"&nbsp;<span class="inlinecode"></span> <span class="inlinecode">&quot;[]&quot;</span> <span class="inlinecode">&quot;(::)&quot;</span> <span class="inlinecode"></span>.<br/>
+Extract&nbsp;Inductive&nbsp;bool&nbsp;=&gt;&nbsp;"bool"&nbsp;<span class="inlinecode"></span> <span class="inlinecode">&quot;<span class="id" title="var">true</span>&quot;</span> <span class="inlinecode">&quot;<span class="id" title="var">false</span>&quot;</span> <span class="inlinecode"></span>.<br/>
+Extract&nbsp;Inductive&nbsp;sumbool&nbsp;=&gt;&nbsp;"bool"&nbsp;<span class="inlinecode"></span> <span class="inlinecode">&quot;<span class="id" title="var">true</span>&quot;</span> <span class="inlinecode">&quot;<span class="id" title="var">false</span>&quot;</span> <span class="inlinecode"></span>.<br/>
+Extract&nbsp;Inductive&nbsp;prod&nbsp;=&gt;&nbsp;"<span class="comment">(*)"&nbsp;&nbsp;<span class="inlinecode"></span> <span class="inlinecode">&quot;(,)&quot;</span> <span class="inlinecode"></span>.<br/>
+<br/>
+Extraction&nbsp;"cpl_decidable.ml"&nbsp;CPL_DC'_Deriv_dec&nbsp;lem.<br/>
+*)</span><br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr/">coqdoc</a> and improved with <a href="https://github.com/tebbi/coqdocjs">CoqdocJS</a>
+</div>
+</div>
+</body>
+
+</html>

@@ -24,10 +24,11 @@ Require Import Coq.extraction.ExtrOcamlNativeString.
 
 Definition lem : @sequent _ _ _ _ _ _ _ CPL := I ⊢ £(?"A" ∨ ¬ ?"A").
 
+(*
 Extract Inductive list => "list" [ "[]" "(::)" ].
 Extract Inductive bool => "bool" [ "true" "false" ].
 Extract Inductive sumbool => "bool" [ "true" "false" ].
 Extract Inductive prod => "(*)"  [ "(,)" ].
 
 Extraction "cpl_decidable.ml" CPL_DC'_Deriv_dec lem.
-
+*)
