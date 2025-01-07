@@ -1,2 +1,4 @@
--R theories/all DC
+-R theories/DC DC
+-R theories/CPL CPL
+-R theories/Kt Kt
 theories

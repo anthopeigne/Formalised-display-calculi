@@ -17,7 +17,7 @@ Require Import Decidability.
 Require Import Rules.
 Require Import PL.
 Import CPLNotations.
-Require Import DecCPL.
+Require Import CPLDec.
 
 Require Extraction.
 Require Import Coq.extraction.ExtrOcamlNativeString.

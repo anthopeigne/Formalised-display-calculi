@@ -25,7 +25,7 @@
 </div>
     <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
     <div id="main">
-<h1 class="libtitle">DC.ExtractDecCPL</h1>
+<h1 class="libtitle">CPL.CPLDecExtract</h1>
 
 <div class="code">
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Strings.String.html#"><span class="id" title="library">String</span></a>.<br/>
@@ -47,16 +47,16 @@
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.Rules.html#"><span class="id" title="library">Rules</span></a>.<br/>
-<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.PL.html#"><span class="id" title="library">PL</span></a>.<br/>
-<span class="id" title="keyword">Import</span> <a class="idref" href="DC.PL.html#CPLNotations"><span class="id" title="module">CPLNotations</span></a>.<br/>
-<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.DecCPL.html#"><span class="id" title="library">DecCPL</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="CPL.PL.html#"><span class="id" title="library">PL</span></a>.<br/>
+<span class="id" title="keyword">Import</span> <a class="idref" href="CPL.PL.html#CPLNotations"><span class="id" title="module">CPLNotations</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="CPL.CPLDec.html#"><span class="id" title="library">CPLDec</span></a>.<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.extraction.Extraction.html#"><span class="id" title="library">Extraction</span></a>.<br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.extraction.ExtrOcamlNativeString.html#"><span class="id" title="library">Coq.extraction.ExtrOcamlNativeString</span></a>.<br/>
 
 <br/>
-<span class="id" title="keyword">Definition</span> <a id="lem" class="idref" href="#lem"><span class="id" title="definition">lem</span></a> : @<a class="idref" href="DC.Sequents.html#sequent"><span class="id" title="inductive">sequent</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <a class="idref" href="DC.PL.html#CPL"><span class="id" title="instance">CPL</span></a> := <a class="idref" href="DC.PL.html#CPL.I"><span class="id" title="constructor">I</span></a> <a class="idref" href="DC.Sequents.html#417d4f8793ef9552198c889adf95d0f2"><span class="id" title="notation">⊢</span></a> <a class="idref" href="DC.PL.html#774ce13660cc12896d3a5bb224ea9c39"><span class="id" title="notation">£(</span></a><a class="idref" href="DC.PL.html#c001995c00846a9d55583045471881d3"><span class="id" title="notation">?</span></a>"A" <a class="idref" href="DC.PL.html#42f2cc0a8cfc3c8591557964d21f8d5f"><span class="id" title="notation">∨</span></a> <a class="idref" href="DC.PL.html#e51107f384bd683975fe2146c52ba37e"><span class="id" title="notation">¬</span></a> <a class="idref" href="DC.PL.html#c001995c00846a9d55583045471881d3"><span class="id" title="notation">?</span></a>"A"<a class="idref" href="DC.PL.html#774ce13660cc12896d3a5bb224ea9c39"><span class="id" title="notation">)</span></a>.<br/>
+<span class="id" title="keyword">Definition</span> <a id="lem" class="idref" href="#lem"><span class="id" title="definition">lem</span></a> : @<a class="idref" href="DC.Sequents.html#sequent"><span class="id" title="inductive">sequent</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <a class="idref" href="CPL.PL.html#CPL"><span class="id" title="instance">CPL</span></a> := <a class="idref" href="CPL.PL.html#CPL.I"><span class="id" title="constructor">I</span></a> <a class="idref" href="DC.Sequents.html#417d4f8793ef9552198c889adf95d0f2"><span class="id" title="notation">⊢</span></a> <a class="idref" href="CPL.PL.html#774ce13660cc12896d3a5bb224ea9c39"><span class="id" title="notation">£(</span></a><a class="idref" href="CPL.PL.html#c001995c00846a9d55583045471881d3"><span class="id" title="notation">?</span></a>"A" <a class="idref" href="CPL.PL.html#42f2cc0a8cfc3c8591557964d21f8d5f"><span class="id" title="notation">∨</span></a> <a class="idref" href="CPL.PL.html#e51107f384bd683975fe2146c52ba37e"><span class="id" title="notation">¬</span></a> <a class="idref" href="CPL.PL.html#c001995c00846a9d55583045471881d3"><span class="id" title="notation">?</span></a>"A"<a class="idref" href="CPL.PL.html#774ce13660cc12896d3a5bb224ea9c39"><span class="id" title="notation">)</span></a>.<br/>
 
 <br/>
 <span class="comment">(*<br/>
