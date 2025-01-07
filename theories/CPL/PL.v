@@ -173,7 +173,7 @@ End PL_LOG.
   Var_inj := PL_LOG.FV_inj;
   Var_ipse := PL_LOG.FV_ipse; |}.
 
-#[export] Instance PL : @LOGLANG _ _ f_PL := {|
+#[export] Instance PL_LANG : @LOGLANG _ _ f_PL := {|
   Atm := PL.Atf;
   FV := PL.FVf;
   ATMVAR := PL_Atm;
@@ -342,7 +342,7 @@ End CPL_STR.
   Var_inj := CPL_STR.FS_inj;
   Var_ipse := CPL_STR.FS_ipse; |}.
 
-#[export] Instance CPL : @STRLANG _ CPL.structr _ _ PL _ f_CPL := {|
+#[export] Instance CPL_LANG : @STRLANG _ CPL.structr _ _ PL_LANG _ f_CPL := {|
   SV := CPL.SVf;
   FS := CPL.FSf;
   SVVAR := CPL_SV;

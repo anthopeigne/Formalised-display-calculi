@@ -43,7 +43,7 @@ Open Scope nat_scope.
 
 Definition MDEICW : DISPCALC := MDE ++ ICW.
 
-Definition CPL_DC' : @DISPCALC _ _ _ _ _ _ _ CPL :=
+Definition CPL_DC' : @DISPCALC _ _ _ _ _ _ _ CPL_LANG :=
   MDEICW ++ [atrefl; Topr; Botl; Negl; Negr; Conl; Consr; Dissl; Disr; Impsl; Impr].
 
 Lemma mset_eq_PR_deriv (s t : sequent) :

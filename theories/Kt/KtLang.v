@@ -349,7 +349,7 @@ End Kt_STR.
   Var_inj := Kt_STR.FS_inj;
   Var_ipse := Kt_STR.FS_ipse; |}.
 
-#[export] Instance Kt : @STRLANG _ Kt.structr _ _ Kt_log _ f_Kt := {|
+#[export] Instance Kt_str : @STRLANG _ Kt.structr _ _ Kt_log _ f_Kt := {|
   SV := Kt.SVf;
   FS := Kt.FSf;
   SVVAR := Kt_SV;

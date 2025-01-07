@@ -50,7 +50,7 @@ Definition CPLHC2 : HCrule := ([], (¬ ?"A" → ¬ ?"B") → (?"B" → ?"A")).
 Definition CPLHC3 : HCrule := ([], (?"A" → (?"B" → ?"C")) →
                                      ((?"A" → ?"B") → (?"A" → ?"C"))).
 
-Definition CPL_HC : @HILBCALC _ _ _ PL := [MP; CPLHC1; CPLHC2; CPLHC3].
+Definition CPL_HC : @HILBCALC _ _ _ PL_LANG := [MP; CPLHC1; CPLHC2; CPLHC3].
 
 
 Section HC_TO_DC.

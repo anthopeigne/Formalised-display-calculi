@@ -22,7 +22,7 @@ Require Import CPLDec.
 Require Extraction.
 Require Import Coq.extraction.ExtrOcamlNativeString.
 
-Definition lem : @sequent _ _ _ _ _ _ _ CPL := I ⊢ £(?"A" ∨ ¬ ?"A").
+Definition lem : @sequent _ _ _ _ _ _ _ CPL_LANG := I ⊢ £(?"A" ∨ ¬ ?"A").
 
 (*
 Extract Inductive list => "list" [ "[]" "(::)" ].
