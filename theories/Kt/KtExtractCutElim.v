@@ -21,9 +21,6 @@ Require Extraction.
 Require Import Coq.extraction.ExtrOcamlNativeString.
 
 
-Definition Kt_cutElim := cutElim Kt_DC Kt_DCBel.
-
-
 
 Definition box_con_dis : rule := ([], £(◻ (%"p" ∧ %"q")) ⊢ £(◻ %"p" ∨ ◻ %"q")).
 

@@ -264,3 +264,6 @@ End CPLBelnap.
   C4_holds := CPLBelnap.C4_holds;
   C5_holds := CPLBelnap.C5_holds;
   C8_holds := CPLBelnap.C8_holds; |}.
+  
+
+Definition CPL_cutElim := cutElim CPL_DC CPL_DC_Bel.

@@ -21,9 +21,6 @@ Require Extraction.
 Require Import Coq.extraction.ExtrOcamlNativeString.
 
 
-Definition cpl_cutElim := cutElim CPL_DC CPL_DC_Bel.
-
-
 
 Definition impcon_impr : rule := ([], (£(%"p" → (%"q" ∧ %"r")) ⊢ £(%"p" → %"r"))).
 

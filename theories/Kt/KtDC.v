@@ -252,3 +252,5 @@ End KtBelnap.
   C4_holds := KtBelnap.C4_holds;
   C5_holds := KtBelnap.C5_holds;
   C8_holds := KtBelnap.C8_holds; |}.
+
+Definition Kt_cutElim := cutElim Kt_DC Kt_DCBel.
