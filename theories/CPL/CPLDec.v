@@ -33,6 +33,7 @@ Require Import Decidability.
 Require Import Rules.
 Require Import PL.
 Require Import CPLRules.
+Require Import CPLDC.
 Import CPLRules.
 Import CPLNotations.
 
@@ -41,10 +42,6 @@ Import ListSetNotations.
 Open Scope list_scope.
 Open Scope nat_scope.
 
-Definition MDEICW : DISPCALC := MDE ++ ICW.
-
-Definition CPL_DC' : @DISPCALC _ _ _ _ _ _ _ CPL_LANG :=
-  MDEICW ++ [atrefl; Topr; Botl; Negl; Negr; Conl; Consr; Dissl; Disr; Impsl; Impr].
 
 Lemma mset_eq_PR_deriv (s t : sequent) :
   PR s ≡ PR t -> deriv_rule_P MDEICW (fun u => PR u ≡ PR s) ([s], t).

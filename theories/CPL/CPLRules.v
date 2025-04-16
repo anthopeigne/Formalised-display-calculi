@@ -102,6 +102,9 @@ Module CPLRules.
   Definition Contl : rule := ([$"X",, $"X" ⊢ $"Y"],
                                $"X" ⊢ $"Y").
 
+  Definition Contr : rule := ([$"X" ⊢ $"Y",, $"Y"],
+                               $"X" ⊢ $"Y").
+
   Definition Assol : rule := ([$"X",, ($"Y",, $"Z") ⊢ $"W"],
                                ($"X",, $"Y"),, $"Z" ⊢ $"W").
 

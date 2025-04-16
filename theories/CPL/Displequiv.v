@@ -29,6 +29,7 @@ Require Import Reduction.
 Require Import Rules.
 Require Import PL.
 Require Import CPLRules.
+Require Import CPLDC.
 Import CPLRules.
 Import CPLNotations.
 
@@ -37,18 +38,6 @@ Open Scope list_scope.
 Import ListSetNotations.
 
 Section Displequiv.
-
-  Definition DE : DISPCALC :=
-    [Mlrn; Mrrslln; Mrls; Snn; Sns; DSEr; Mrrn; Mlrsrln; Mlls; Comml; Assol].
-
-  Definition MDE : DISPCALC :=
-    [Mlln; Mlls; Mlrn; Mlrs; Mrln; Mrls; Mrrn; Mrrs; Snn; Sns; Ssn; Sss; DSEl; DSEr;
-     DSIl; DSIr; Comml; Commr; Assol; Assolinv].
-
-  Definition ICW : DISPCALC :=
-    [Iaddl; Idell; Iaddr; Idelr; Wkl; Wkr; Contl; ContWkls; ContWkln].
-
-  Definition MDEICW : DISPCALC := MDE ++ ICW.
 
   Ltac set_XYZW :=    
     set (X := $"X" : structr);

@@ -42,8 +42,13 @@ Section Derivability.
     derrnc_nocut : allDT nocut derr_dt; }.
 
   Definition DerivDC (DC' : DISPCALC) := forall r, r ∈ DC' -> DerivRule r.
+  
+  Definition DerivDCNC (DC' : DISPCALC) := forall r, r ∈ DC' -> DerivRuleNC r.
 
   Lemma alr_DerivRule (r : rule) `{dr : DerivRule r} : DerivRule r.
+  Proof. assumption. Defined.
+
+  Lemma alr_DerivRuleNC (r : rule) `{dr : DerivRuleNC r} : DerivRuleNC r.
   Proof. assumption. Defined.
 
   #[export] Instance derr_rules : forall r, r ∈ DC -> DerivRule r.
@@ -377,6 +382,12 @@ Section DerivRule.
     split; [apply dernc_derremcut|apply derremcut_dernc].
   Defined.
 
+  Lemma dernc_derremcur_DC (DC' : DISPCALC) :
+    DerivDCNC DC DC' -> DerivDC (remove_rule CUT DC) DC'.
+  Proof.
+    intros H r Hr. apply dernc_derremcut. apply H. assumption.
+  Defined.
+
   Lemma DerivRule_rule_bw_Inst_expl (ps ss : list sequent) (c : sequent) (afs : afsSubst)
     (HDer : DerivRule DC (ss, c)) :
     ForallT (fun s => DerivRule DC (ps, seqSubst afs s)) ss -> DerivRule DC (ps, seqSubst afs c).
@@ -578,6 +589,25 @@ Section MoreSubDisp.
     intro H. apply DerivDC_SubDer. apply DerivDC_app; [apply DerivDC_refl | assumption].
   Defined.
 
+  Lemma remove_incl_base [A : Type] (eq_dec : forall x y : A, {x = y} + {x <> y})
+    (l : list A) (a : A) : remove eq_dec a l ⊆ l.
+  Proof.
+    intros x Hx. apply in_remove in Hx. tauto.
+  Qed.
+
+  Lemma Extend_DerivDCNC (DC1 DC2 : DISPCALC) :
+    DerivDCNC DC1 DC2 -> SubDerNC (DC1 ++ DC2) DC1.
+  Proof.
+    intro H. intros r Hr. apply derremcut_dernc.
+    apply dernc_derremcut in Hr.
+    apply (SubDC_SubDer _ (remove_rule CUT DC1 ++ DC2)) in Hr.
+    - revert Hr. apply Extend_DerivDC. apply dernc_derremcur_DC. assumption.
+    - unfold remove_rule. rewrite remove_app.
+      apply incl_app_app. apply incl_refl. apply remove_incl_base.
+  Defined.
+      
+    
+
   Lemma DerivDC_one (DC : DISPCALC) (r : rule) :
     DerivRule DC r -> DerivDC DC [r].
   Proof.
@@ -616,7 +646,7 @@ Section MoreSubDisp.
     intro dr. apply Extend_DerivRuleNC. assumption.
   Defined.
 
-End MoreSubDisp.  
+End MoreSubDisp.
 
 
 (* Tactics to simplify proofs within the object logic *)
