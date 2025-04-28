@@ -66,11 +66,21 @@ End HC_TO_DC.
 
 Definition cplHilbComp (DC : DISPCALC) := SubDer (HCtoDC CPL_HC) DC.
 
-Definition cplLr : DISPCALC := (CPL_DC ++ [refl]).
+Definition CPL_DC_r : DISPCALC := CPL_DC ++ [refl].
 
 Definition ExtraDC : DISPCALC := [Ssn; Sns; Sss; DSEl; Commr; Mlln; Mrrs; Assolinv; Wkl].
 
-#[export] Instance cplLr_MP : DerivRule cplLr (HCtoDC_rule MP).
+Theorem CPL_DC_r_ExtraDC : DerivDC CPL_DC_r ExtraDC.
+Proof.
+  Import CPLDeriv.
+  intros r Hr; dec_destruct_List_In (@eqdec rule _) r;
+  rewrite Heq;
+  apply (SubDC_DerivRule CPL_DC CPL_DC_r);
+  try (unfold CPL_DC_r; apply incl_appl, incl_refl);
+  apply (alr_DerivRule _ _).
+Defined.
+
+#[export] Instance CPL_DC_r_MP : DerivRule CPL_DC_r (HCtoDC_rule MP).
 Proof.
   unfold MP. set (A := ?"A"). set (B := ?"B").
   simpl. unfold fmltoseq.
@@ -85,20 +95,10 @@ Proof.
   confirm_derr d.
 Defined.
 
-Theorem cplLr_ExtraDC : DerivDC cplLr ExtraDC.
-Proof.
-  Import CPLDeriv.
-  intros r Hr; dec_destruct_List_In (@eqdec rule _) r;
-  rewrite Heq;
-  apply (SubDC_DerivRule CPL_DC cplLr);
-  try (unfold cplLr; apply incl_appl, incl_refl);
-  apply (alr_DerivRule _ _).
-Defined.
-
-#[export] Instance cplLr_CPLHC1 : DerivRule cplLr (HCtoDC_rule CPLHC1).
+#[export] Instance CPL_DC_r_CPLHC1 : DerivRule CPL_DC_r (HCtoDC_rule CPLHC1).
 Proof.
   unfold CPLHC1. set (A := ?"A"). set (B := ?"B").
-  apply (Extend_DerivDC _ _ cplLr_ExtraDC).
+  apply (Extend_DerivDC _ _ CPL_DC_r_ExtraDC).
   confirm_derr (Der (I ⊢ £(A → (B → A))) Impr
                [Der (I,, £A ⊢ £(B → A)) Comml
                [Der (£A,, I ⊢ £(B → A)) Iaddl                    
@@ -108,10 +108,10 @@ Proof.
                [Der (£A ⊢ £A) refl []]]]]]]).
 Defined.
 
-#[export] Instance cplLr_CPLHC2 : DerivRule cplLr (HCtoDC_rule CPLHC2).
+#[export] Instance CPL_DC_r_CPLHC2 : DerivRule CPL_DC_r (HCtoDC_rule CPLHC2).
 Proof.
   unfold CPLHC2. set (A := ?"A"). set (B := ?"B").
-  apply (Extend_DerivDC _ _ cplLr_ExtraDC).
+  apply (Extend_DerivDC _ _ CPL_DC_r_ExtraDC).
   set (d := Der (I ⊢ £((¬ A → ¬ B) → (B → A))) Impr
             [Der (I,, £(¬ A → ¬ B) ⊢ £(B → A)) Comml
             [Der (£(¬ A → ¬ B),, I ⊢ £(B → A)) Iaddl
@@ -128,10 +128,10 @@ Proof.
   confirm_derr d.
 Defined.
 
-#[export] Instance cplLr_CPLHC3 : DerivRule cplLr (HCtoDC_rule CPLHC3).
+#[export] Instance CPL_DC_r_CPLHC3 : DerivRule CPL_DC_r (HCtoDC_rule CPLHC3).
 Proof.
   unfold CPLHC3. set (A := ?"A"). set (B := ?"B"). set (C := ?"C").
-  apply (Extend_DerivDC _ _ cplLr_ExtraDC).
+  apply (Extend_DerivDC _ _ CPL_DC_r_ExtraDC).
   set (d :=  Der (I ⊢ £((A → (B → C)) → ((A → B) → (A → C)))) Impr
             [Der (I,, £(A → (B → C)) ⊢ £((A → B) → (A → C))) Comml
             [Der (£(A → (B → C)),, I ⊢ £((A → B) → (A → C))) Iaddl
@@ -165,7 +165,8 @@ Proof.
   confirm_derr d.
   Defined.
 
-Theorem CPL_DCHilbComp : SubDer (HCtoDC CPL_HC) (CPL_DC ++ [refl]).
+(* CPL_DC_r is Hilbert-complete *)
+Theorem Hilbert_complete_CPL_DC_r : SubDer (HCtoDC CPL_HC) CPL_DC_r.
 Proof.
   apply DerivDC_SubDer. intros r Hr.
   unfold HCtoDC, CPL_HC, map in Hr.
