@@ -100,7 +100,7 @@ Section CutElim.
       destruct (Var_dec SV Z) as [[v Hv]|HnSV];
         [|destruct (Var_dec FS Z) as [[B HB]|HnFS]].
       + destruct b; try contradiction.
-        destruct_List_In. rewrite <- H.
+        dest_in_list Hxb. rewrite <- Hxb.
         simpl in Heq1, Heq2. rewrite <- Heq1, <- Heq2.
         apply strrep_two.
       + rewrite HB in Hxb. rewrite (Var_ipse FS) in Hxb.

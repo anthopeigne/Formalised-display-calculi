@@ -875,10 +875,15 @@ Ltac specialize_ForallT_H HF :=
       specialize_ForallT_H HF
   end.
 
+(*
 Ltac specialize_list :=
   match goal with
   | Hall : forall x, List.In x _ -> _ |- _ => rewrite <- Forall_forall in Hall; specialize_Forall_H Hall
   end.
+*)
+
+Ltac spec_list H :=
+  rewrite <- Forall_forall in H; specialize_Forall_H H.
 
 
 Ltac specialize_Forall2_H HF2 :=
@@ -893,10 +898,45 @@ Ltac specialize_Forall2_H HF2 :=
       end
   end.
 
+
+Ltac Forall2_destruct_list_H l a HF2 :=
+  pose proof (Forall2_length HF2) as Hlen;
+  destruct_list_easy l a;
+  specialize_Forall2_H HF2; clear Hlen.
+
+Ltac Forall2_destruct_list l a :=
+  let Hlen := fresh "Hlen" in
+  match goal with
+  | HF2 : Forall2 _ l _ |- _ => Forall2_destruct_list_H l a HF2
+  | HF2 : Forall2 _ _ l |- _ => Forall2_destruct_list_H l a HF2
+  end.
+
+
 Ltac NoDup_two :=
   let H := fresh in 
   apply NoDup_cons; [|apply NoDup_single];
   simpl; intros [H|H]; [discriminate|assumption].
+
+
+(* Destruct hypothesis x ∈ [...] with a goal in Type
+where the type of x has decidable equality. *)
+Ltac dest_in_list_eqdec Aeq_dec H :=
+  match type of H with
+  | ?x ∈ ?l => try unfold l in H
+  end;
+  match type of H with
+  | ?x ∈ [] => contradiction
+  | ?x ∈ (?y :: ?ys) => 
+      try (pattern x);
+      apply (eq_dec_in_list Aeq_dec H); clear H;
+      [let Heq := fresh "Heq" in intro Heq |
+       intro H; dest_in_list_eqdec Aeq_dec H]
+  end.
+
+Ltac dest_in_list_eqdec_var Aeq_dec x :=
+  match goal with
+  | H : x ∈ ?l |- _ => dest_in_list_eqdec Aeq_dec H
+  end.
 
 
 Theorem not_and_iff_or_not [A B : Prop] : Decidable.decidable A -> ~ (A /\ B) <-> ~ A \/ ~ B.

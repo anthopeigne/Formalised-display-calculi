@@ -162,7 +162,7 @@ Section Displequiv.
   Lemma DE_eq_MDE : EqDer DE MDE.
   Proof.
     apply DerivDC_EqDer;
-    intros r Hr; dec_destruct_List_In rule_eq_dec r; rewrite Heq;
+    intros r Hr; dest_in_list_eqdec rule_eq_dec Hr; rewrite Heq;
       try (apply derr_rules; simpl; tauto);
       try apply (alr_DerivRule _ _).
   Defined.
@@ -221,7 +221,7 @@ Section Displequiv.
     forall r r', r ∈ DE -> ruleInst r r' -> ForallT (displequiv (conclRule r')) (premsRule r').
   Proof.
     intros r r' Hr Hsub.
-    dec_destruct_List_In rule_eq_dec r; rewrite Heq in Hsub;
+    dest_in_list_eqdec rule_eq_dec Hr; rewrite Heq in Hsub;
       apply ruleInst_ruleSubst in Hsub; destruct Hsub as [pfs Hpfs]; rewrite Hpfs; simpl;
       set (X := snd pfs "X"); set (Y := snd pfs "Y");
       set (Z := snd pfs "Z"); set (W := snd pfs "W");
@@ -241,7 +241,7 @@ Section Displequiv.
 
   Lemma DE_length_prems_one : forall r, r ∈ DE -> length (premsRule r) = 1.
   Proof.
-    intros r Hr. destruct_List_In_name Hr; rewrite <- Hr0; reflexivity.
+    intros r Hr. dest_in_list Hr; rewrite <- Hr; reflexivity.
   Qed.
 
   Lemma DE_ruleInst_prems_sig :
@@ -256,7 +256,7 @@ Section Displequiv.
 
   Lemma MDE_length_prems_one : forall r, r ∈ MDE -> length (premsRule r) = 1.
   Proof.
-    intros r Hr. destruct_List_In_name Hr; rewrite <- Hr0; reflexivity.
+    intros r Hr. dest_in_list Hr; rewrite <- Hr; reflexivity.
   Qed.
 
   Lemma MDE_ruleInst_prems_sig :
@@ -329,7 +329,7 @@ Section Displequiv.
 
   Lemma MDE_Dist_Fact : DerivDC MDE [Distl; Factl; Distr; Factr].
   Proof.
-    intros r Hr. dec_destruct_List_In rule_eq_dec r;
+    intros r Hr. dest_in_list_eqdec rule_eq_dec Hr;
       rewrite Heq; apply (alr_DerivRule _ _).
   Defined.         
 
@@ -338,7 +338,7 @@ Section Displequiv.
         ForallT (fun s => displequiv (V,, antec s ⊢ succ s) (V,, antec c ⊢ succ c)) ps.
   Proof.
     intros r prems conc V Hr Hsub.
-    dec_destruct_List_In rule_eq_dec r; rewrite Heq in Hsub;
+    dest_in_list_eqdec rule_eq_dec Hr; rewrite Heq in Hsub;
       apply ruleInst_ruleSubst in Hsub; destruct Hsub as [pfs Hpfs];
       injection Hpfs; intros Hconc Hprems; rewrite Hconc, Hprems; simpl;
       set (X := snd pfs "X"); set (Y := snd pfs "Y");
@@ -403,14 +403,14 @@ Section Displequiv.
     simpl in Hconc, Hprems. revert X Y X' Y' Hsp Hprems Hconc.
     induction dt as [s|s r l IH]; intros X Y X' Y' Hsp Hprems Hconc.
     - simpl in Hconc, Hprems. specialize (Hprems s (or_introl eq_refl)).
-      dec_destruct_List_In sequent_eq_dec s.
+      dest_in_list_eqdec sequent_eq_dec Hprems.
       rewrite Heq in Hconc. injection Hconc.
       intros HeqY HeqX. rewrite HeqY, HeqX.
       apply displequiv_refl.
     - pose proof (semiproperUp _ _ Hsp) as Hspup.
       apply semiproper_root in Hsp. destruct Hsp as [Hexr Hwfr].
-      destruct l. exfalso. simpl in Hexr, Hwfr. destruct_or_name Hexr;
-        rewrite <- Hexr0 in Hwfr; destruct Hwfr; discriminate.
+      destruct l. exfalso. simpl in Hexr, Hwfr. dest_or Hexr;
+        rewrite <- Hexr in Hwfr; destruct Hwfr; discriminate.
       apply ForallT_inv in IH.
       specialize (IH X Y (antec (conclDT d)) (succ (conclDT d))).
       eapply displequiv_tran; try apply IH.
@@ -544,7 +544,7 @@ Section Displequiv.
         ForallT (fun s => displequiv (∗ antec s ⊢ ∗ succ s) (∗ antec conc ⊢ ∗ succ conc)) prems.
   Proof.
     intros r prems conc Hr Hsub.
-    dec_destruct_List_In rule_eq_dec r; rewrite Heq in Hsub;
+    dest_in_list_eqdec rule_eq_dec Hr; rewrite Heq in Hsub;
       apply ruleInst_ruleSubst in Hsub; destruct Hsub as [pfs Hpfs];
       injection Hpfs; intros Hconc Hprems; rewrite Hconc, Hprems; simpl;
       set (X := snd pfs "X"); set (Y := snd pfs "Y");
@@ -604,14 +604,14 @@ Section Displequiv.
     simpl in Hconc, Hprems. revert X Y X' Y' Hsp Hprems Hconc.
     induction dt as [s|s r l IH]; intros X Y X' Y' Hsp Hprems Hconc.
     - simpl in Hconc, Hprems. specialize (Hprems s (or_introl eq_refl)).
-      dec_destruct_List_In sequent_eq_dec s.
+      dest_in_list_eqdec sequent_eq_dec Hprems.
       rewrite Heq in Hconc. injection Hconc.
       intros HeqY HeqX. rewrite HeqY, HeqX.
       apply displequiv_refl.
     - pose proof (semiproperUp _ _ Hsp) as Hspup.
       apply semiproper_root in Hsp. destruct Hsp as [Hexr Hwfr].
-      destruct l. exfalso. simpl in Hexr, Hwfr. destruct_or_name Hexr;
-        rewrite <- Hexr0 in Hwfr; destruct Hwfr; discriminate.
+      destruct l. exfalso. simpl in Hexr, Hwfr. dest_or Hexr;
+        rewrite <- Hexr in Hwfr; destruct Hwfr; discriminate.
       apply ForallT_inv in IH.
       specialize (IH X Y (antec (conclDT d)) (succ (conclDT d))).
       eapply displequiv_tran; try apply IH.
@@ -791,7 +791,7 @@ Section Displequiv.
         Forall (fun s => PR s ≡ PR (conclRule r')) (premsRule r').
   Proof.
     intros r r' Hr Hsub.
-    dec_destruct_List_In rule_eq_dec r; rewrite Heq in Hsub;
+    dest_in_list_eqdec rule_eq_dec Hr; rewrite Heq in Hsub;
       apply ruleInst_ruleSubst in Hsub; destruct Hsub as [pfs Hpfs];
       rewrite Hpfs; simpl;
       set (X := snd pfs "X"); set (Y := snd pfs "Y");
@@ -815,8 +815,8 @@ Section Displequiv.
       apply (Forall_mp Hspup) in IH.
       apply (Forall_mp (premsDTUp_Forall _ _ Hprems)) in IH.
       simpl in IH.
-      destruct l. exfalso. simpl in Hexr, Hwfr. destruct_or_name Hexr;
-        rewrite <- Hexr0 in Hwfr; destruct Hwfr; discriminate.
+      destruct l. exfalso. simpl in Hexr, Hwfr. dest_or Hexr;
+        rewrite <- Hexr in Hwfr; destruct Hwfr; discriminate.
       simpl. eapply mset_eq_tran; try apply (Forall_inv IH).
       apply (Forall_inv (MDE_mset_eq r _ Hexr Hwfr)).
   Qed.

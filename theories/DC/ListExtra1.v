@@ -67,6 +67,17 @@ Proof.
 Defined.
 
 
+Lemma eq_dec_in_list [A : Type] (Aeq_dec : forall x y : A, {x = y} + {x <> y}) [P : A -> Type] [y : A] [ys : list A] [x : A] :
+  x ∈ (y :: ys) -> ((x = y -> P x) -> (x ∈ ys -> P x) -> P x).
+Proof.
+  intros Hin Hy Hys.
+  destruct (Aeq_dec x y) as [Heq|Hneq].
+  - apply Hy. assumption.
+  - apply not_eq_sym in Hneq. apply Hys.
+    destruct Hin; [contradiction | assumption].
+Defined.
+
+
 
 Definition nxorb (b1 b2 : bool) : bool := if b1 then b2 else negb b2.
 

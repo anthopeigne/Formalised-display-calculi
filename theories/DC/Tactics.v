@@ -4,6 +4,7 @@ Import ListNotations.
 Require Import ListSetNotations.
 
 
+(* For each hypothesis x = y, rewrite x to y in the goal *)
 Ltac all_rewrite :=
   repeat match goal with
     | [H : _ = _ |- _] => rewrite H; revert H
@@ -29,6 +30,41 @@ Ltac auto_ind_tauto := repeat (constructor; try tauto).
 Ltac eauto_ind_tauto := repeat (constructor; try (tauto || eassumption)).
 
 
+Ltac dest_or H :=
+  match type of H with
+  | False     => contradiction
+  | _ \/ _ => destruct H as [H|H]; dest_or H
+  | _     => idtac
+  end.
+
+Ltac dest_or_any :=
+  match goal with
+  | H: _ \/ _ |- _ => dest_or H
+  | _ => idtac
+  end.
+
+
+
+(* Destruct a hypothesis H : x ∈ l entirely.
+   I.e. reduce the goal to length l many subgoals
+   where the ith subgoal is the same but with H replaced by x = y_i
+   where y_i is the ith element of l. *)
+Ltac dest_in_list H :=
+  simpl in H; dest_or H.
+(*
+  match type of H with
+  | ?x ∈ [] => contradiction
+  | ?x ∈ (?y :: ?ys) =>
+      let Heq := fresh "Heq" in
+      destruct H as [Heq|H]; [|dest_in_list H]
+  end.
+*)
+
+Ltac dest_in_list_any :=
+  match goal with
+  | H : _ ∈ _ |- _ => dest_in_list H
+  | _ => idtac
+  end.
 
 
 Ltac clean_dcl a :=
@@ -45,18 +81,19 @@ Ltac dcl_rec Aeq_dec a l :=
   | []        => try (match goal with | [ H : List.In a ?l' |- _ ] => simpl in H; exfalso; tauto end)
   end.
 
-Ltac dec_destruct_List_In Aeq_dec a :=
+Ltac dest_in_list_eqdec_rec Aeq_dec a :=
   try (match goal with | H : List.In a ?l |- _ => unfold l in H end);
   match goal with
   | [ H : List.In a ?l |- _ ] => dcl_rec Aeq_dec a l
   end.
+
 
 Ltac destruct_list_easy l u :=
   repeat let a := fresh u in destruct l as [|a l]; try (discriminate || tauto).
 
 
 
-
+(*
 Ltac destruct_or :=
   match goal with
     | [ H : ?P \/ ?Q |- _ ]  => destruct H; [idtac | destruct_or]; try tauto
@@ -76,7 +113,7 @@ Ltac destruct_or_name H :=
   end.
 
 Ltac destruct_List_In_name H := simpl in H; destruct_or_name H.
-
+*)
 
 Ltac forall_list_tauto_name H :=
   try contradiction; try (rewrite <- H); try (simpl; tauto);
@@ -108,7 +145,7 @@ Ltac auto_incl :=
   match goal with
     |- incl ?l ?l' =>
       let x := fresh "x" in let Hx := fresh "H" x in
-      intros x Hx; destruct_List_In_name Hx;
+      intros x Hx; dest_in_list Hx;
       match goal with H : _ = x |- _ => rewrite <- H; simpl; tauto end
   end.
 

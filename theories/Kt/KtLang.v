@@ -100,7 +100,7 @@ Module Kt_LOG.
     intro H. induction A; apply H;
       try (simpl; tauto);
       try (intros B HB; simpl ipse in HB;
-           dec_destruct_List_In fml_eq_dec B;
+           dest_in_list_eqdec_rec fml_eq_dec B;
            rewrite Heq; assumption).
   Defined.
 
@@ -232,7 +232,7 @@ Module Kt_STR.
     intro H. induction A; apply H;
       try (simpl; tauto);
       try (intros B HB; simpl ipse in HB;
-           dec_destruct_List_In str_eq_dec B;
+           dest_in_list_eqdec_rec str_eq_dec B;
            rewrite Heq; assumption).
   Defined.
 

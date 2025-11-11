@@ -73,7 +73,7 @@ Definition ExtraDC : DISPCALC := [Ssn; Sns; Sss; DSEl; Commr; Mlln; Mrrs; Assoli
 Theorem CPL_DC_r_ExtraDC : DerivDC CPL_DC_r ExtraDC.
 Proof.
   Import CPLDeriv.
-  intros r Hr; dec_destruct_List_In (@eqdec rule _) r;
+  intros r Hr; dest_in_list_eqdec (@eqdec rule _) Hr;
   rewrite Heq;
   apply (SubDC_DerivRule CPL_DC CPL_DC_r);
   try (unfold CPL_DC_r; apply incl_appl, incl_refl);
@@ -170,5 +170,5 @@ Theorem Hilbert_complete_CPL_DC_r : SubDer (HCtoDC CPL_HC) CPL_DC_r.
 Proof.
   apply DerivDC_SubDer. intros r Hr.
   unfold HCtoDC, CPL_HC, map in Hr.
-  dec_destruct_List_In rule_eq_dec r; rewrite Heq; try apply (alr_DerivRule _ _).
+  dest_in_list_eqdec rule_eq_dec Hr; rewrite Heq; try apply (alr_DerivRule _ _).
 Defined.

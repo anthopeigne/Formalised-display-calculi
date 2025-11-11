@@ -1266,7 +1266,7 @@ Ltac trivial_axiom_tree r :=
 Lemma all_DerivRuleReducSDR : forall r, r ∈ CPL_DC' -> DerivRuleReducSDR CPL_DC' r.
 Proof.
   intros r Hr. unfold CPL_DC', MDE, ICW in Hr. simpl app in Hr.
-  dec_destruct_List_In rule_eq_dec r;
+  dest_in_list_eqdec rule_eq_dec Hr;
   rewrite Heq; try (apply (alr_DerivRuleReducSDR _ _)); prep_DRRSDR.
   all:
     try (apply SDR_incl_PR_Deriv;
@@ -1339,7 +1339,7 @@ Ltac trivial_POC r :=
 Lemma all_DerivRuleSTReducPOC : forall r, r ∈ CPL_DC' -> DerivRuleSTReducPOC CPL_DC' r.
 Proof.
   intros r Hr. unfold CPL_DC', MDE, ICW in Hr. simpl app in Hr.
-  dec_destruct_List_In rule_eq_dec r; rewrite Heq;
+  dest_in_list_eqdec rule_eq_dec Hr; rewrite Heq;
     intros r' Hinst; apply ruleInst_ruleSubst in Hinst;
     destruct Hinst as [afs Heqr']; simpl in Heqr'; rewrite Heqr';
     try match goal with [H : r = ?r0 |- _] => trivial_POC r0 end.

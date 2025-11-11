@@ -77,6 +77,12 @@ Section Derivability.
     rewrite <- Heq. simpl. tauto.
   Defined.
 
+  Corollary derrnc_rules' {DC' : DISPCALC} :
+    DC' = remove_rule CUT DC -> forall r, r ∈ DC' -> DerivRuleNC r.
+  Proof.
+    intros. apply derrnc_rules. rewrite <- H. assumption.
+  Defined.
+
   Lemma ForallT_Deriv_sig :
     forall ls, ForallT Deriv ls ->
       ForallT (fun s => {dt | proper DC dt /\ conclDT dt = s}) ls.
@@ -200,7 +206,7 @@ Section Derivability.
     - revert c.
       apply (deriv_prseq_mut_rect _ _ (fun c => DerivRule (ps, c))
                (fun lc => ForallT (fun c => DerivRule (ps, c)) lc)).
-      + intros c Hc. exists (Unf c); simpl;
+      + intros c Hc. exists (Unf c);
           [apply semiproper_Unf|auto_incl|reflexivity].
       + intros cs c r Hexr Hwfr Hders HDers.
         apply ForallT_DerivRule_sig in HDers.
@@ -611,7 +617,7 @@ Section MoreSubDisp.
   Lemma DerivDC_one (DC : DISPCALC) (r : rule) :
     DerivRule DC r -> DerivDC DC [r].
   Proof.
-    intros H x Hx. dec_destruct_List_In rule_eq_dec x. rewrite Heq. assumption.
+    intros H x Hx. dest_in_list_eqdec_var rule_eq_dec x. rewrite Heq. assumption.
   Defined.
 
   Theorem Extend_DerivRule (DC : DISPCALC) (r : rule)

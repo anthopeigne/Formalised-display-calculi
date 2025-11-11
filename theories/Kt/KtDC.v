@@ -32,6 +32,44 @@ Definition Kt_DC : DISPCALC :=
    Ssn; Sns; DSEl; DSIl; DSEr; DSIr; Scl; Scr].
 
 
+Definition Kt_RIR : list rule :=
+  [atrefl; Topr; Botr; Negr; Conr; Disr; Impr; Boxnr; Dianr; Boxpr; Diapr].
+Definition Kt_LIR : list rule :=
+  [atrefl; Topl; Botl; Negl; Conl; Disl; Impl; Boxnl; Dianl; Boxpl; Diapl].
+
+Lemma Kt_RIR_ppty : forall r, r ∈ Kt_DC -> (r ∈ Kt_RIR <-> strIsFml (succ (conclRule r))).
+Proof.
+  intros r Hr. split.
+  - intro HRIR. dest_in_list HRIR;
+      rewrite <- HRIR; simpl; constructor.
+  - intro H. dest_in_list Hr; rewrite <- Hr; auto_in;
+      unfold strIsFml in H; rewrite <- Hr in H;
+      rewrite (isVar_iff_isVar_cpt FS) in H;
+      unfold isVar_cpt in H; simpl Var_dec in H;
+      simpl in H; contradiction.
+Qed.
+
+Lemma Kt_LIR_ppty : forall r, r ∈ Kt_DC -> (r ∈ Kt_LIR <-> strIsFml (antec (conclRule r))).
+Proof.
+  intros r Hr. split.
+  - intro HLIR. dest_in_list HLIR;
+      rewrite <- HLIR; simpl; constructor.
+  - intro H. dest_in_list Hr; rewrite <- Hr; auto_in;
+      unfold strIsFml in H; rewrite <- Hr in H;
+      rewrite (isVar_iff_isVar_cpt FS) in H;
+      unfold isVar_cpt in H; simpl Var_dec in H;
+      simpl in H; contradiction.
+Qed.
+
+(* This is necessary for the application of the tactic prep_C8. *)
+#[export] Instance Kt_INTRO_RULES : INTRO_RULES Kt_DC := {|
+  RIR := Kt_RIR;
+  LIR := Kt_LIR;
+  RIR_ppty := Kt_RIR_ppty;
+  LIR_ppty := Kt_LIR_ppty
+|}.
+
+
 Module KtDeriv.
 
   Ltac set_XYZW :=
@@ -206,7 +244,7 @@ Module KtBelnap.
   
   Theorem C8_holds : C8 Kt_DC.
   Proof.
-    auto_C8.
+    prep_C8 Kt_DC.
     - remember (fst (fst afsR) "p") as p. rewrite HeqipsA in *.
       exists (Der (£%p ⊢ £%p) atrefl []). split.
       try (repeat (split; try auto_in; try auto_wfr)).
