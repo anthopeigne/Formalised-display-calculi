@@ -25,15 +25,15 @@ Import LambekRules.
 Definition Lambek_DC : DISPCALC :=
   [atrefl; CUT;
    Topl; Topr; Botl; Botr; Conll; Conlr; Conr; Disl; Disrl; Disrr;
-   Onel; Oner; Zerl; Zerr; Fusl; Fusr; Undl; Undr; Ovel; Over;
+   Onel; Oner; (*Zerl; Zerr;*) Fusl; Fusr; Undl; Undr; Ovel; Over;
    Iwl; Iwr; Φaddll; Φaddlr; Φaddrl; Φaddrr; Φdelll; Φdellr; Φdelrl; Φdelrr;
    Rlesml; Rsmlel; Rlesmr; Rsmler; Rgesml; Rsmgel; Rgesmr; Rsmger].
 
 (* Lists of logical introduction rules of the calculus *)
 Definition Lambek_RIR :=
-  [atrefl; Topr; Botr; Conr; Disrl; Disrr; Oner; Zerr; Fusr; Undr; Over].
+  [atrefl; Topr; Botr; Conr; Disrl; Disrr; Oner;(* Zerr;*) Fusr; Undr; Over].
 Definition Lambek_LIR :=
-  [atrefl; Topl; Botl; Conll; Conlr; Disl; Onel; Zerl; Fusl; Undl; Ovel].
+  [atrefl; Topl; Botl; Conll; Conlr; Disl; Onel; (*Zerl;*) Fusl; Undl; Ovel].
 (* Their defining properties. *)
 Lemma Lambek_RIR_ppty : forall r, r ∈ Lambek_DC -> (r ∈ Lambek_RIR <-> strIsFml (succ (conclRule r))).
 Proof.
@@ -100,9 +100,9 @@ Module LambekDeriv.
     - set (d := Der (£| ⊢ £|) Onel
                [Der (Φ ⊢ £|) Oner []]).
       confirm_derrnc d.
-    - set (d := Der (£○ ⊢ £○) Zerr
+(*    - set (d := Der (£○ ⊢ £○) Zerr
                [Der (£○ ⊢ Φ) Zerl []]).
-      confirm_derrnc d.
+      confirm_derrnc d. *)
     - apply_DRNC_inDC Fusl.
       apply_DRNC_inDC Fusr;
       assumption.
@@ -237,9 +237,9 @@ Module LambekBelnap.
     - exists dR. rewrite HeqX, HeqY. split; [|split]; try assumption.
       apply (allDT_impl _ _ (nocut_impl_cut (isipsubfml A))).
       assumption.
-    - exists dL. rewrite HeqX, HeqY. split; [|split]; try assumption.
+(*    - exists dL. rewrite HeqX, HeqY. split; [|split]; try assumption.
       apply (allDT_impl _ _ (nocut_impl_cut (isipsubfml A))).
-      assumption.
+      assumption.*)
     - rewrite HeqX, HeqY, HeqAR. rewrite H2, H3 in *.
       apply (C8_Fus [dL; dL0; dR]); try auto_Forall.
       simpl. rewrite H, H0, H1. reflexivity.

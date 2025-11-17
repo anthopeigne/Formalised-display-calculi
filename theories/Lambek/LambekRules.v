@@ -52,25 +52,18 @@ Module LambekRules.
 
   Definition Oner  : rule := ([],
                               Φ ⊢ £|).
-
+(*
   Definition Zerl  : rule := ([],
                               £○ ⊢ Φ). 
   
   Definition Zerr  : rule := ([$"X" ⊢ Φ],
-                               $"X" ⊢ £○).
+                               $"X" ⊢ £○).*)
 
   Definition Fusl  : rule := ([£?"A" ;; £?"B" ⊢ $"X"],
                                £(?"A" ⊗ ?"B") ⊢ $"X").
 
   Definition Fusr  : rule := ([$"X" ⊢ £?"A"   ;   $"Y" ⊢ £?"B"],
                                $"X" ;; $"Y" ⊢ £(?"A" ⊗ ?"B")).
-(*
-  Definition Disl  : rule := ([£?"A" ⊢ $"X"   ;   £?"B" ⊢ $"Y"],
-                               £(?"A" ∨ ?"B") ⊢ $"X",, $"Y").
-
-  Definition Disr  : rule := ([$"X" ⊢ £?"A",, £?"B"],
-                               $"X" ⊢ £(?"A" ∨ ?"B")).
-*)
 
   Definition Undl  : rule := ([$"X" ⊢ £?"A"   ;   £?"B" ⊢ $"Y"],
                                £(?"A" \ ?"B") ⊢ $"X" ⟩ $"Y").

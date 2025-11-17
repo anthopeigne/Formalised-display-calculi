@@ -1,0 +1,177 @@
+Require Import String.
+Require Import Ensembles.
+Require Import List.
+Import ListNotations.
+
+Require Import EqDec.
+Require Import Tactics.
+Require Import Utils.
+Require Import Lang.
+Require Import Sequents.
+Require Import Substitutions.
+Require Import Derivation.
+Require Import Cuts.
+Require Import Derivability.
+Require Import Rules.
+Require Import PL.
+Require Import LambekDC.
+Require Import LambekRules.
+Import LambekRules.
+
+Open Scope string_scope.
+Open Scope list_scope.
+Close Scope nat_scope.
+
+
+
+(* Proof that our display calculus for Lambek calculus is Hilbert-complete *)
+
+(* Here, we implement the "syntatic calculus" of Lambek as described in
+Lambek, J. (1993). From categorial grammar to bilinear logic. Substructural logics, 2, 207-237 *)
+
+Section BasicCalc.
+
+  Context `{LL : LOGLANG}.
+
+  Definition HCsequent := formula * formula
+  Definition HCrule := list HCsequent * HCsequent.
+  Definition HCpremsRule (r : HCrule) : list formula := fst r.
+  Definition HCconclRule (r : HCrule) : formula := snd r.
+
+End BasicCalc.
+
+
+Definition HILBCALC `{LL : LOGLANG} := list (@HCrule formula).
+
+Import LambekNotations.
+
+Definition MP : HCrule := ([?"A"; ?"A" → ?"B"],
+                            ?"B").
+
+Definition LambekHC1 : HCrule := ([], ?"A" → (?"B" → ?"A")).
+Definition LambekHC2 : HCrule := ([], (¬ ?"A" → ¬ ?"B") → (?"B" → ?"A")).
+Definition LambekHC3 : HCrule := ([], (?"A" → (?"B" → ?"C")) →
+                                     ((?"A" → ?"B") → (?"A" → ?"C"))).
+
+Definition Lambek_HC : @HILBCALC _ _ _ PL_LANG := [MP; LambekHC1; LambekHC2; LambekHC3].
+
+
+Section HC_TO_DC.
+
+  Definition fmltoseq (A : PL.formula) : sequent := I ⊢ FS A.
+
+  Definition HCtoDC_rule (r : HCrule) : rule := 
+    (map fmltoseq (HCpremsRule r), fmltoseq (HCconclRule r)).
+
+  Definition HCtoDC (HC : HILBCALC) : DISPCALC := map HCtoDC_rule HC.
+
+End HC_TO_DC.
+
+Definition cplHilbComp (DC : DISPCALC) := SubDer (HCtoDC Lambek_HC) DC.
+
+Definition Lambek_DC_r : DISPCALC := Lambek_DC ++ [refl].
+
+Definition ExtraDC : DISPCALC := [Ssn; Sns; Sss; DSEl; Commr; Mlln; Mrrs; Assolinv; Wkl].
+
+Theorem Lambek_DC_r_ExtraDC : DerivDC Lambek_DC_r ExtraDC.
+Proof.
+  Import LambekDeriv.
+  intros r Hr; dest_in_list_eqdec (@eqdec rule _) Hr;
+  rewrite Heq;
+  apply (SubDC_DerivRule Lambek_DC Lambek_DC_r);
+  try (unfold Lambek_DC_r; apply incl_appl, incl_refl);
+  apply (alr_DerivRule _ _).
+Defined.
+
+#[export] Instance Lambek_DC_r_MP : DerivRule Lambek_DC_r (HCtoDC_rule MP).
+Proof.
+  unfold MP. set (A := ?"A"). set (B := ?"B").
+  simpl. unfold fmltoseq.
+  set (d := Der (I ⊢ £B) CUT
+           [Unf (I ⊢ £(A → B));
+            Der (£(A → B) ⊢ £B) Idell
+              [Der (£(A → B),, I ⊢ £B) Comml
+              [Der (I,, £(A → B) ⊢ £B) Mrls
+              [Der (£(A → B) ⊢ ∗I,, £B) Impl
+              [Unf (I ⊢ £A);
+               Der (£B ⊢ £B) refl []]]]]]).
+  confirm_derr d.
+Defined.
+
+#[export] Instance Lambek_DC_r_LambekHC1 : DerivRule Lambek_DC_r (HCtoDC_rule LambekHC1).
+Proof.
+  unfold LambekHC1. set (A := ?"A"). set (B := ?"B").
+  apply (Extend_DerivDC _ _ Lambek_DC_r_ExtraDC).
+  confirm_derr (Der (I ⊢ £(A → (B → A))) Impr
+               [Der (I,, £A ⊢ £(B → A)) Comml
+               [Der (£A,, I ⊢ £(B → A)) Iaddl                    
+               [Der (£A ⊢ £(B → A)) Impr
+               [Der (£A,, £B ⊢ £A) Comml
+               [Der (£B,, £A ⊢ £A) Wkl
+               [Der (£A ⊢ £A) refl []]]]]]]).
+Defined.
+
+#[export] Instance Lambek_DC_r_LambekHC2 : DerivRule Lambek_DC_r (HCtoDC_rule LambekHC2).
+Proof.
+  unfold LambekHC2. set (A := ?"A"). set (B := ?"B").
+  apply (Extend_DerivDC _ _ Lambek_DC_r_ExtraDC).
+  set (d := Der (I ⊢ £((¬ A → ¬ B) → (B → A))) Impr
+            [Der (I,, £(¬ A → ¬ B) ⊢ £(B → A)) Comml
+            [Der (£(¬ A → ¬ B),, I ⊢ £(B → A)) Iaddl
+            [Der (£(¬ A → ¬ B) ⊢ £(B → A)) Impr
+            [Der (£(¬ A → ¬ B),, £B ⊢ £A) DSEr
+            [Der (£(¬ A → ¬ B),, £B ⊢ ∗∗£A) Mrrs
+            [Der (£(¬ A → ¬ B) ⊢ (∗∗£A),, ∗£B) Impl
+            [Der (∗£A ⊢ £(¬ A)) Negr
+            [Der (∗£A ⊢ ∗£A) Snn
+            [Der (£A ⊢ £A) refl []]];
+             Der (£(¬ B) ⊢ ∗£B) Negl
+               [Der (∗£B ⊢ ∗£B) Snn
+               [Der (£B ⊢ £B) refl []]]]]]]]]]).
+  confirm_derr d.
+Defined.
+
+#[export] Instance Lambek_DC_r_LambekHC3 : DerivRule Lambek_DC_r (HCtoDC_rule LambekHC3).
+Proof.
+  unfold LambekHC3. set (A := ?"A"). set (B := ?"B"). set (C := ?"C").
+  apply (Extend_DerivDC _ _ Lambek_DC_r_ExtraDC).
+  set (d :=  Der (I ⊢ £((A → (B → C)) → ((A → B) → (A → C)))) Impr
+            [Der (I,, £(A → (B → C)) ⊢ £((A → B) → (A → C))) Comml
+            [Der (£(A → (B → C)),, I ⊢ £((A → B) → (A → C))) Iaddl
+            [Der (£(A → (B → C)) ⊢ £((A → B) → (A → C))) Impr
+            [Der (£(A → (B → C)),, £(A → B) ⊢ £(A → C)) Impr
+            [Der ((£(A → (B → C)),, £(A → B)),, £A ⊢ £C) Comml
+            [Der (£A,, (£(A → (B → C)),, £(A → B)) ⊢ £C) Assolinv
+            [Der ((£A,, £(A → (B → C))),, £(A → B) ⊢ £C) Comml
+            [Der (£(A → B),, (£A,, £(A → (B → C))) ⊢ £C) Mrls
+            [Der ((£A,, £(A → (B → C))) ⊢ ∗£(A → B),, £C) Mrrs
+            [Der (£A ⊢ (∗£(A → B),, £C),, ∗£(A → (B → C))) Contl
+            [Der (£A,, £A ⊢ (∗£(A → B),, £C),, ∗£(A → (B → C))) Mlrn
+            [Der ((£A,, £A),, £(A → (B → C)) ⊢ ∗£(A → B),, £C) Assol
+            [Der (£A,, (£A,, £(A → (B → C))) ⊢ ∗£(A → B),, £C) Mrls
+            [Der (£A,, £(A → (B → C)) ⊢ ∗£A,, (∗£(A → B),, £C)) Mrls
+            [Der (£(A → (B → C)) ⊢ ∗£A,, (∗£A,, (∗£(A → B),, £C))) Impl
+            [Der (£A ⊢ £A) refl [];
+             Der (£(B → C) ⊢ ∗£A,, (∗£(A → B),, £C)) Mlln
+               [Der (£A,, £(B → C) ⊢ ∗£(A → B),, £C) Mlln
+               [Der (£(A → B),, (£A,, £(B → C)) ⊢ £C) Assolinv
+               [Der ((£(A → B),, £A),, £(B → C) ⊢ £C) Mrrs
+               [Der (£(A → B),, £A ⊢ £C,, ∗£(B → C)) Comml
+               [Der (£A,, £(A → B) ⊢ £C,, ∗£(B → C)) Mrls
+               [Der (£(A → B) ⊢ ∗£A,, (£C,, ∗£(B → C))) Impl
+               [Der (£A ⊢ £A) refl [];
+                Der (£B ⊢ £C,, ∗£(B → C)) Mlrn
+                  [Der (£B,, £(B → C) ⊢ £C) Mrls
+                  [Der (£(B → C) ⊢ ∗£B,, £C) Impl
+                  [Der (£B ⊢ £B) refl [];
+                   Der (£C ⊢ £C) refl []]]]]]]]]]]]]]]]]]]]]]]]]]]).
+  confirm_derr d.
+  Defined.
+
+(* Lambek_DC_r is Hilbert-complete *)
+Theorem Hilbert_complete_Lambek_DC_r : SubDer (HCtoDC Lambek_HC) Lambek_DC_r.
+Proof.
+  apply DerivDC_SubDer. intros r Hr.
+  unfold HCtoDC, Lambek_HC, map in Hr.
+  dest_in_list_eqdec rule_eq_dec Hr; rewrite Heq; try apply (alr_DerivRule _ _).
+Defined.
