@@ -27,7 +27,7 @@ Definition Kt_DC : DISPCALC :=
    Topl; Topr; Botl; Botr; Negl; Negr; Conl; Conr; Disl; Disr; Impl; Impr;
    Boxnl; Boxnr; Dianl; Dianr; Boxpl; Boxpr; Diapl; Diapr;
    Iaddl; Idell; Iaddr; Idelr; Isl; Iul; Isr; Iur; Wkl; Wkr;
-   Assol; Assoinvl; Assor; Assoinvr; Comml; Commr; Contl; Contr; Icl; Icr;
+   Assol; Assolinv; Assor; Assorinv; Comml; Commr; Contl; Contr; Icl; Icr;
    Mlrn; Mrrs; Mlln; Mrls; Mrrn; Mlrs; Mrln; Mlls;
    Ssn; Sns; DSEl; DSIl; DSEr; DSIr; Scl; Scr].
 
@@ -75,6 +75,17 @@ Module KtDeriv.
   Ltac set_XYZW :=
     set (X := $"X" : structr); set (Y := $"Y" : structr);
     set (Z := $"Z" : structr); set (W := $"W" : structr).
+
+  #[export] Instance dernc_Snn : DerivRuleNC Kt_DC Snn.
+  Proof.
+    set_XYZW.
+    confirm_derrnc (Der (∗Y ⊢ ∗X) Idell
+                   [Der (I,, ∗Y ⊢ ∗X) Mrrn
+                   [Der (I ⊢ ∗X,, Y) Mlln
+                   [Der (X,, I ⊢ Y) Comml
+                   [Der (I,, X ⊢ Y) Iaddl
+                   [Unf (X ⊢ Y)]]]]]).
+  Defined.
 
   #[export] Instance dernc_Sss : DerivRuleNC Kt_DC Sss.
   Proof.

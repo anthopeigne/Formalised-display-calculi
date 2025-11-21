@@ -110,13 +110,13 @@ Module KtRules.
   Definition Assol : rule := ([$"X",, ($"Y",, $"Z") ⊢ $"W"],
                                ($"X",, $"Y"),, $"Z" ⊢ $"W").
   
-  Definition Assoinvl : rule := ([($"X",, $"Y"),, $"Z" ⊢ $"W"],
+  Definition Assolinv : rule := ([($"X",, $"Y"),, $"Z" ⊢ $"W"],
                                   $"X",, ($"Y",, $"Z") ⊢ $"W").
 
   Definition Assor : rule := ([$"X" ⊢ $"Y",, ($"Z",, $"W")],
                                $"X" ⊢ ($"Y",, $"Z"),, $"W").
   
-  Definition Assoinvr : rule := ([$"X" ⊢ ($"Y",, $"Z"),, $"W"],
+  Definition Assorinv : rule := ([$"X" ⊢ ($"Y",, $"Z"),, $"W"],
                                   $"X" ⊢ $"Y",, ($"Z",, $"W")).
 
   Definition Comml : rule := ([$"X",, $"Y" ⊢ $"Z"],
@@ -191,6 +191,9 @@ Module KtRules.
 
   Definition Sss : rule := ([∗ $"X" ⊢ ∗ $"Y"],
                              $"Y" ⊢ $"X").
+
+  Definition Snn : rule := ([$"X" ⊢ $"Y"],
+                             ∗ $"Y" ⊢ ∗ $"X").
 
 
 End KtRules.

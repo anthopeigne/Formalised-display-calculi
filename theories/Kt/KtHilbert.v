@@ -1,0 +1,298 @@
+Require Import String.
+Require Import Ensembles.
+Require Import List.
+Import ListNotations.
+
+Require Import EqDec.
+Require Import Tactics.
+Require Import Utils.
+Require Import Lang.
+Require Import Sequents.
+Require Import Substitutions.
+Require Import Derivation.
+Require Import Cuts.
+Require Import Derivability.
+Require Import Rules.
+Require Import KtLang.
+Require Import KtDC.
+Require Import KtRules.
+Import KtRules.
+
+Open Scope string_scope.
+Open Scope list_scope.
+Close Scope nat_scope.
+
+
+
+(* Proof that our display calculus for Kt is Hilbert-complete *)
+
+
+Section BasicCalc.
+
+  Context `{LL : LOGLANG}.
+
+  Definition HCrule := list formula * formula.
+  Definition HCpremsRule (r : HCrule) : list formula := fst r.
+  Definition HCconclRule (r : HCrule) : formula := snd r.
+
+End BasicCalc.
+
+
+Definition HILBCALC `{LL : LOGLANG} := list (@HCrule formula).
+
+Import KtNotations.
+
+Definition MP : HCrule := ([?"A"; ?"A" → ?"B"],
+                            ?"B").
+
+Definition CPLHC1 : HCrule := ([], ?"A" → (?"B" → ?"A")).
+Definition CPLHC2 : HCrule := ([], (¬ ?"A" → ¬ ?"B") → (?"B" → ?"A")).
+Definition CPLHC3 : HCrule := ([], (?"A" → (?"B" → ?"C")) →
+                                     ((?"A" → ?"B") → (?"A" → ?"C"))).
+
+Definition BOXDIS : HCrule := ([], ◻ (?"A" → ?"B") → (◻ ?"A" → ◻ ?"B")).
+Definition BBODIS : HCrule := ([], ◼ (?"A" → ?"B") → (◼ ?"A" → ◼ ?"B")).
+Definition BOXBDI : HCrule := ([], ?"A" → ◻⧫ ?"A").
+Definition BBODIA : HCrule := ([], ?"A" → ◼◊ ?"A").
+
+Definition NECBOX : HCrule := ([?"A"], ◻ ?"A").
+Definition NECBBO : HCrule := ([?"A"], ◼ ?"A").
+
+
+Definition Kt_HC : @HILBCALC _ _ _ Kt_log :=
+  [MP; CPLHC1; CPLHC2; CPLHC3; BOXDIS; BBODIS; BOXBDI; BBODIA; NECBOX; NECBBO].
+
+
+Section HC_TO_DC.
+
+  Definition fmltoseq (A : Kt.formula) : sequent := I ⊢ FS A.
+
+  Definition HCtoDC_rule (r : HCrule) : rule := 
+    (map fmltoseq (HCpremsRule r), fmltoseq (HCconclRule r)).
+
+  Definition HCtoDC (HC : HILBCALC) : DISPCALC := map HCtoDC_rule HC.
+
+End HC_TO_DC.
+
+Definition cplHilbComp (DC : DISPCALC) := SubDer (HCtoDC Kt_HC) DC.
+
+Definition Kt_DC_r : DISPCALC := Kt_DC ++ [refl].
+
+Ltac set_ABC := set (A := ?"A"); set (B := ?"B"); set (C := ?"C").
+Ltac prep_HCrule :=
+  match goal with |- DerivRule _ (HCtoDC_rule ?r) => unfold r end;
+  set_ABC; unfold HCtoDC_rule, fmltoseq; simpl.
+
+#[export] Instance Kt_DC_r_MP : DerivRule Kt_DC_r (HCtoDC_rule MP).
+Proof.
+  prep_HCrule.
+  set (d := Der (I ⊢ £B) CUT
+           [Unf (I ⊢ £(A → B));
+            Der (£(A → B) ⊢ £B) Idell
+              [Der (I,, £(A → B) ⊢ £B) Mrls
+              [Der (£(A → B) ⊢ ∗I,, £B) Impl
+              [Unf (I ⊢ £A);
+               Der (£B ⊢ £B) refl []]]]]).
+  confirm_derr d.
+Defined.
+
+#[export] Instance Kt_DC_r_CPLHC1 : DerivRule Kt_DC_r (HCtoDC_rule CPLHC1).
+Proof.
+  prep_HCrule.
+  confirm_derr (Der (I ⊢ £(A → (B → A))) Impr
+               [Der (I,, £A ⊢ £(B → A)) Iaddl                    
+               [Der (£A ⊢ £(B → A)) Impr
+               [Der (£A,, £B ⊢ £A) Comml
+               [Der (£B,, £A ⊢ £A) Wkl
+               [Der (£A ⊢ £A) refl []]]]]]).
+Defined.
+
+#[export] Instance Kt_DC_r_CPLHC2 : DerivRule Kt_DC_r (HCtoDC_rule CPLHC2).
+Proof.
+  prep_HCrule.
+  apply (Extend_DerivRule_expl _ Snn).
+  apply (SubDC_SubDer Kt_DC); [apply incl_appl, incl_refl|].
+  apply derrnc_derr. Import KtDeriv. apply (alr_DerivRuleNC _ _).
+  set (d := Der (I ⊢ £((¬ A → ¬ B) → (B → A))) Impr
+            [Der (I,, £(¬ A → ¬ B) ⊢ £(B → A)) Iaddl
+            [Der (£(¬ A → ¬ B) ⊢ £(B → A)) Impr
+            [Der (£(¬ A → ¬ B),, £B ⊢ £A) DSEr
+            [Der (£(¬ A → ¬ B),, £B ⊢ ∗∗£A) Mrrs
+            [Der (£(¬ A → ¬ B) ⊢ (∗∗£A),, ∗£B) Impl
+            [Der (∗£A ⊢ £(¬ A)) Negr
+            [Der (∗£A ⊢ ∗£A) Snn
+            [Der (£A ⊢ £A) refl []]];
+             Der (£(¬ B) ⊢ ∗£B) Negl
+               [Der (∗£B ⊢ ∗£B) Snn
+               [Der (£B ⊢ £B) refl []]]]]]]]]).
+  confirm_derr d.
+Defined.
+
+#[export] Instance Kt_DC_r_CPLHC3 : DerivRule Kt_DC_r (HCtoDC_rule CPLHC3).
+Proof.
+  prep_HCrule.
+  set (d :=  Der (I ⊢ £((A → (B → C)) → ((A → B) → (A → C)))) Impr
+            [Der (I,, £(A → (B → C)) ⊢ £((A → B) → (A → C))) Iaddl
+            [Der (£(A → (B → C)) ⊢ £((A → B) → (A → C))) Impr
+            [Der (£(A → (B → C)),, £(A → B) ⊢ £(A → C)) Impr
+            [Der ((£(A → (B → C)),, £(A → B)),, £A ⊢ £C) Comml
+            [Der (£A,, (£(A → (B → C)),, £(A → B)) ⊢ £C) Assolinv
+            [Der ((£A,, £(A → (B → C))),, £(A → B) ⊢ £C) Comml
+            [Der (£(A → B),, (£A,, £(A → (B → C))) ⊢ £C) Mrls
+            [Der ((£A,, £(A → (B → C))) ⊢ ∗£(A → B),, £C) Mrrs
+            [Der (£A ⊢ (∗£(A → B),, £C),, ∗£(A → (B → C))) Contl
+            [Der (£A,, £A ⊢ (∗£(A → B),, £C),, ∗£(A → (B → C))) Mlrn
+            [Der ((£A,, £A),, £(A → (B → C)) ⊢ ∗£(A → B),, £C) Assol
+            [Der (£A,, (£A,, £(A → (B → C))) ⊢ ∗£(A → B),, £C) Mrls
+            [Der (£A,, £(A → (B → C)) ⊢ ∗£A,, (∗£(A → B),, £C)) Mrls
+            [Der (£(A → (B → C)) ⊢ ∗£A,, (∗£A,, (∗£(A → B),, £C))) Impl
+            [Der (£A ⊢ £A) refl [];
+             Der (£(B → C) ⊢ ∗£A,, (∗£(A → B),, £C)) Mlln
+               [Der (£A,, £(B → C) ⊢ ∗£(A → B),, £C) Mlln
+               [Der (£(A → B),, (£A,, £(B → C)) ⊢ £C) Assolinv
+               [Der ((£(A → B),, £A),, £(B → C) ⊢ £C) Mrrs
+               [Der (£(A → B),, £A ⊢ £C,, ∗£(B → C)) Comml
+               [Der (£A,, £(A → B) ⊢ £C,, ∗£(B → C)) Mrls
+               [Der (£(A → B) ⊢ ∗£A,, (£C,, ∗£(B → C))) Impl
+               [Der (£A ⊢ £A) refl [];
+                Der (£B ⊢ £C,, ∗£(B → C)) Mlrn
+                  [Der (£B,, £(B → C) ⊢ £C) Mrls
+                  [Der (£(B → C) ⊢ ∗£B,, £C) Impl
+                  [Der (£B ⊢ £B) refl [];
+                   Der (£C ⊢ £C) refl []]]]]]]]]]]]]]]]]]]]]]]]]]).
+  confirm_derr d.
+  Defined.
+
+#[export] Instance Kt_DC_r_BOXDIS : DerivRule Kt_DC_r (HCtoDC_rule BOXDIS).
+Proof.
+  prep_HCrule.
+  set (d := (Der (I ⊢ £ ◻ (A → B) → (◻ A → ◻ B)) Impr
+            [Der (I,, £ ◻ (A → B) ⊢ £ (◻ A → ◻ B)) Iaddl
+            [Der (£ ◻ (A → B) ⊢ £ (◻ A → ◻ B)) Impr
+            [Der (£ ◻ (A → B),, £ ◻ A ⊢ £ ◻ B) Boxnr
+            [Der (● (£ ◻ (A → B),, £ ◻ A) ⊢ £ B) Contl
+            [Der (● (£ ◻ (A → B),, £ ◻ A),, ● (£ ◻ (A → B),, £ ◻ A) ⊢ £ B) Mrls
+            [Der (● (£ ◻ (A → B),, £ ◻ A) ⊢ ∗ (● (£ ◻ (A → B),, £ ◻ A)),, £ B) Scr
+            [Der (£ ◻ (A → B),, £ ◻ A ⊢ ● (∗ (● (£ ◻ (A → B),, £ ◻ A)),, £ B)) Comml
+            [Der (£ ◻ A,, £ ◻ (A → B) ⊢ ● (∗ (● (£ ◻ (A → B),, £ ◻ A)),, £ B)) Wkl
+            [Der (£ ◻ (A → B) ⊢ ● (∗ (● (£ ◻ (A → B),, £ ◻ A)),, £ B)) Boxnl
+            [Der (£ (A → B) ⊢ ∗ (● (£ ◻ (A → B),, £ ◻ A)),, £ B) Impl
+              [Der (● (£ ◻ (A → B),, £ ◻ A) ⊢ £ A) Scr
+              [Der (£ ◻ (A → B),, £ ◻ A ⊢ ● £ A) Wkl
+              [Der (£ ◻ A ⊢ ● £ A) Boxnl
+              [Der (£ A ⊢ £ A) refl []]]];
+               Der (£ B ⊢ £ B) refl []]]]]]]]]]]])).
+  confirm_derr d.
+Defined.
+
+Definition Sdl : rule := ([(∗ ● ∗ $"X") ⊢ $"Y"],
+                           $"X" ⊢ ∗ ● ∗ $"Y").
+
+Definition Sdr : rule := ([$"X" ⊢ ∗ ● ∗ $"Y"],
+                           (∗ ● ∗ $"X") ⊢ $"Y").
+
+#[export] Instance derr_Sdl : DerivRule Kt_DC Sdl.
+Proof.
+  unfold Sdl. set_XYZW.
+  confirm_derr (Der (X ⊢ ∗ ● ∗ Y) Sns
+               [Der ((● ∗ Y) ⊢ ∗ X) Scr
+               [Der (∗ Y ⊢ ● ∗ X) Ssn
+               [Unf ((∗ ● ∗ X) ⊢ Y)]]]).
+Defined.
+
+#[export] Instance derr_Sdr : DerivRule Kt_DC Sdr.
+Proof.
+  unfold Sdr. set_XYZW.
+  confirm_derr (Der ((∗ ● ∗ X) ⊢ Y) Ssn
+               [Der (∗ Y ⊢ ● ∗ X) Scl
+               [Der ((● ∗ Y) ⊢ ∗ X) Sns
+               [Unf (X ⊢ ∗ ● ∗ Y)]]]).
+Defined.
+
+Definition SdDC : DISPCALC := [Sdl; Sdr].
+
+Theorem Kt_DC_r_SdDC : DerivDC Kt_DC_r SdDC.
+Proof.
+  Import KtDeriv.
+  intros r Hr; dest_in_list_eqdec (@eqdec rule _) Hr;
+  rewrite Heq;
+  apply (SubDC_DerivRule Kt_DC Kt_DC_r);
+  try (unfold Kt_DC_r; apply incl_appl, incl_refl);
+  apply (alr_DerivRule _ _).
+Defined.
+
+#[export] Instance Kt_DC_r_BBODIS : DerivRule Kt_DC_r (HCtoDC_rule BBODIS).
+Proof.
+  prep_HCrule.
+  apply (Extend_DerivDC _ _ Kt_DC_r_SdDC).
+  set (d := (Der (I ⊢ £ ◼ (A → B) → (◼ A → ◼ B)) Impr
+            [Der (I,, £ ◼ (A → B) ⊢ £ (◼ A → ◼ B)) Iaddl
+            [Der (£ ◼ (A → B) ⊢ £ (◼ A → ◼ B)) Impr
+            [Der (£ ◼ (A → B),, £ ◼ A ⊢ £ ◼ B) Boxpr
+            [Der (£ ◼ (A → B),, £ ◼ A ⊢ ∗ ● ∗ £ B) Sdl
+            [Der ((∗●∗ (£ ◼ (A → B),, £ ◼ A)) ⊢ £ B) Contl
+            [Der ((∗●∗ (£ ◼ (A → B),, £ ◼ A)),, (∗●∗ (£ ◼ (A → B),, £ ◼ A)) ⊢ £ B) Mrls
+            [Der ((∗●∗ (£ ◼ (A → B),, £ ◼ A)) ⊢ (∗∗●∗ (£ ◼ (A → B),, £ ◼ A)),, £ B) Sdr
+            [Der (£ ◼ (A → B),, £ ◼ A ⊢ ∗●∗ ((∗∗●∗ (£ ◼ (A → B),, £ ◼ A)),, £ B)) Comml
+            [Der (£ ◼ A,, £ ◼ (A → B) ⊢ ∗●∗ ((∗∗●∗ (£ ◼ (A → B),, £ ◼ A)),, £ B)) Wkl
+            [Der (£ ◼ (A → B) ⊢ ∗●∗ ((∗∗●∗ (£ ◼ (A → B),, £ ◼ A)),, £ B)) Boxpl
+            [Der (£ (A → B) ⊢ (∗∗●∗ (£ ◼ (A → B),, £ ◼ A)),, £ B) Impl
+              [Der ((∗●∗ (£ ◼ (A → B),, £ ◼ A)) ⊢ £ A) Sdr
+              [Der (£ ◼ (A → B),, £ ◼ A ⊢ ∗●∗ £ A) Wkl
+              [Der (£ ◼ A ⊢ ∗●∗ £ A) Boxpl
+              [Der (£ A ⊢ £ A) refl []]]];
+               Der (£ B ⊢ £ B) refl []]]]]]]]]]]]])).
+  confirm_derr d.
+Defined.
+
+#[export] Instance Kt_DC_r_BOXBDI : DerivRule Kt_DC_r (HCtoDC_rule BOXBDI).
+Proof.
+  prep_HCrule.
+  confirm_derr (Der (I ⊢ £(A → ◻⧫A)) Impr
+               [Der (I,, £A ⊢ £◻⧫A) Iaddl
+               [Der (£A ⊢ £◻⧫A) Boxnr
+               [Der (● £A ⊢ £⧫A) Diapr
+               [Der (£A ⊢ £A) refl []]]]]).
+Defined.
+
+#[export] Instance Kt_DC_r_BBODIA : DerivRule Kt_DC_r (HCtoDC_rule BBODIA).
+Proof.
+  prep_HCrule.
+  apply (Extend_DerivDC _ _ Kt_DC_r_SdDC).
+  confirm_derr (Der (I ⊢ £(A → ◼◊A)) Impr
+               [Der (I,, £A ⊢ £◼◊A) Iaddl
+               [Der (£A ⊢ £◼◊A) Boxpr
+               [Der (£A ⊢ ∗●∗ £◊A) Sdl
+               [Der ((∗●∗ £A) ⊢ £◊A) Dianr
+               [Der (£A ⊢ £A) refl []]]]]]).
+Defined.
+
+#[export] Instance Kt_DC_r_NECBOX : DerivRule Kt_DC_r (HCtoDC_rule NECBOX).
+Proof.
+  prep_HCrule.
+  confirm_derr (Der (I ⊢ £◻A) Boxnr
+               [Der (●I ⊢ £A) Icl
+               [Unf (I ⊢ £A)]]).
+Defined.
+
+#[export] Instance Kt_DC_r_NECBBO : DerivRule Kt_DC_r (HCtoDC_rule NECBBO).
+Proof.
+  prep_HCrule.
+  apply (Extend_DerivDC _ _ Kt_DC_r_SdDC).
+  confirm_derr (Der (I ⊢ £◼A) Boxpr
+               [Der (I ⊢ ∗●∗ £A) Sns
+               [Der ((●∗ £A) ⊢ ∗I) Isr
+               [Der ((●∗ £A) ⊢ I) Scr
+               [Der ((∗ £A) ⊢ ●I) Icr
+               [Der ((∗ £A) ⊢ I) Ssn
+               [Der ((∗ I) ⊢ £A) Isl
+               [Unf (I ⊢ £A)]]]]]]]).
+Defined.
+
+(* Kt_DC_r is Hilbert-complete *)
+Theorem Hilbert_complete_Kt_DC_r : SubDer (HCtoDC Kt_HC) Kt_DC_r.
+Proof.
+  apply DerivDC_SubDer. intros r Hr.
+  unfold HCtoDC, Kt_HC, map in Hr.
+  dest_in_list_eqdec rule_eq_dec Hr; rewrite Heq; try apply (alr_DerivRule _ _).
+Defined.
