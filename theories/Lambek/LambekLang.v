@@ -35,7 +35,6 @@ Module Lambek.
     | Dis (phi psi : formula)
     | Con (phi psi : formula)
     | One
-(*    | Zer*)
     | Fus (phi psi : formula)
     | Und (phi psi : formula)
     | Ove (phi psi : formula).
@@ -59,7 +58,6 @@ Module LambekNotations.
   Notation "⊤" := (Lambek.Top) (at level 20).
   Notation "⊥" := (Lambek.Bot) (at level 20).
   Notation "|" := (Lambek.One) (at level 20).
-(*  Notation "○" := (Lambek.Zer) (at level 20).*)
   Notation "phi ∨ psi" := (Lambek.Dis phi psi) (at level 30).
   Notation "phi ∧ psi" := (Lambek.Con phi psi) (at level 30).
   Notation "phi ⊗ psi" := (Lambek.Fus phi psi) (at level 30).

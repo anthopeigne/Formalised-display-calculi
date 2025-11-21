@@ -35,7 +35,6 @@ Section BasicCalc.
   Context `{LL : LOGLANG}.
 
   Inductive HCsequent := HCSequent : formula -> formula -> HCsequent.
-(*  Definition HCsequent := formula * formula.*)
   Definition HCrule := list HCsequent * HCsequent.
   Definition HCpremsRule (r : HCrule) : list HCsequent := fst r.
   Definition HCconclRule (r : HCrule) : HCsequent := snd r.
@@ -51,8 +50,6 @@ Import LambekNotations.
 Definition REFL : HCrule := ([], ?"A" ⇒ ?"A").
 Definition TRANS : HCrule := ([?"A" ⇒ ?"B"; ?"B" ⇒ ?"C"], ?"A" ⇒ ?"C").
 Definition FIDR : HCrule := ([], ?"A" ⊗ | ⇒ ?"A").
-(*Definition FUNR2 : HCrule := ([], ?"A" ⇒ ?"A" ⊗ |).
-Definition FUNL1 : HCrule := ([], | ⊗ ?"A" ⇒ ?"A").*)
 Definition FIDL : HCrule := ([], ?"A" ⇒ | ⊗ ?"A").
 Definition FIDLR : HCrule := ([], | ⊗ ?"A" ⇒ ?"A" ⊗ |).
 Definition FUOV : HCrule := ([?"A" ⊗ ?"B" ⇒ ?"C"], ?"A" ⇒ ?"C" ∕ ?"B").
@@ -87,20 +84,6 @@ End HC_TO_DC.
 Definition LambekHilbComp (DC : DISPCALC) := SubDer (HCtoDC Lambek_HC) DC.
 
 Definition Lambek_DC_r : DISPCALC := Lambek_DC ++ [refl].
-
-(*
-Definition ExtraDC : DISPCALC := [Ssn; Sns; Sss; DSEl; Commr; Mlln; Mrrs; Assolinv; Wkl].
-
-Theorem Lambek_DC_r_ExtraDC : DerivDC Lambek_DC_r ExtraDC.
-Proof.
-  Import LambekDeriv.
-  intros r Hr; dest_in_list_eqdec (@eqdec rule _) Hr;
-  rewrite Heq;
-  apply (SubDC_DerivRule Lambek_DC Lambek_DC_r);
-  try (unfold Lambek_DC_r; apply incl_appl, incl_refl);
-  apply (alr_DerivRule _ _).
-Defined.
-*)
 
 Ltac set_ABC := set (A := ?"A"); set (B := ?"B"); set (C := ?"C").
 Ltac prep_HCrule :=

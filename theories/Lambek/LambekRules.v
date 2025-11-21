@@ -13,6 +13,10 @@ Import LambekNotations.
 
 Module LambekRules.
 
+  (* Rules based on
+     Goré, R. (1998). Substructural logics on display. Logic Journal of IGPL, 6(3), 451-504. *)
+
+
   (* Logical rules *)
 
   (* Extensional connectives *)
@@ -52,12 +56,6 @@ Module LambekRules.
 
   Definition Oner  : rule := ([],
                               Φ ⊢ £|).
-(*
-  Definition Zerl  : rule := ([],
-                              £○ ⊢ Φ). 
-  
-  Definition Zerr  : rule := ([$"X" ⊢ Φ],
-                               $"X" ⊢ £○).*)
 
   Definition Fusl  : rule := ([£?"A" ;; £?"B" ⊢ $"X"],
                                £(?"A" ⊗ ?"B") ⊢ $"X").
