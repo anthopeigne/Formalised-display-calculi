@@ -10,11 +10,6 @@ Require Import Utils.
 Require Import FunAgree.
 Require Import Tactics.
 
-Definition psc (A : Type) : Type := list A * A.
-Definition trf (A : Type) : Type := A -> A.
-Definition pscmap {A B : Type} (f : A -> B) : psc A -> psc B :=
-  fun x => match x with (ps, c) => (map f ps, f c) end.
-
 (* Class for a plain formal language with sub-expressions and connectives *) 
 Class FLANG {expr : Type} {ED : EqDec expr} := {
   ipse : expr -> list expr; (* immediate proper sub-expressions *)
@@ -685,27 +680,5 @@ Section SubstMore.
       exists (fmlSubst af A'). split; try assumption.
       apply In_ipse_subst. assumption.
   Qed.
-
-  (* An alternative way of defining a substitutions by matching expre *)
-(*  Definition fml_lmatchsub' : expr -> expr ->
-    (list (string * string)) * (list (string * expr)) :=
-    ipse_rect _ (fun A IH => fun B =>
-      match Var_dec Atm A, Var_dec Atm B with
-      | inleft (exist _ p _), inleft (exist _ q _) => ([(p, q)], [])
-      | _, _ =>
-          match Var_dec FV A with
-          | inleft (exist _ V _) => ([], [(V, B)])
-          | inright _ =>
-              fold_right (fun A'B' => let A' := fst A'B' in let B' := snd A'B' in
-                                   app2 (
-                                   match in_dec eqdec A' (ipse A) with
-                                   | left Hin => IH A' Hin B'
-                                   | right _ => ([], [])
-                                   end))
-                         ([], [])
-                         (zip pair (ipse A) (ipse B))
-          end
-      end).
-*)
 
 End SubstMore.

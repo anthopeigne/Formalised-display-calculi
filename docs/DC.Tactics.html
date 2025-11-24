@@ -28,12 +28,12 @@
 <h1 class="libtitle">DC.Tactics</h1>
 
 <div class="code">
-<span class="comment">(*Require&nbsp;Import&nbsp;Ensembles.*)</span><br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#"><span class="id" title="library">List</span></a>.<br/>
 <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#ListNotations"><span class="id" title="module">ListNotations</span></a>.<br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.ListSetNotations.html#"><span class="id" title="library">ListSetNotations</span></a>.<br/>
 
 <br/>
+<span class="comment">(*&nbsp;For&nbsp;each&nbsp;hypothesis&nbsp;x&nbsp;=&nbsp;y,&nbsp;rewrite&nbsp;x&nbsp;to&nbsp;y&nbsp;in&nbsp;the&nbsp;goal&nbsp;*)</span><br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">all_rewrite</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">repeat</span> <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;| [<span class="id" title="var">H</span> : <span class="id" title="var">_</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt; <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span>; <span class="id" title="var">revert</span> <span class="id" title="var">H</span><br/>
@@ -63,6 +63,36 @@
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">eauto_ind_tauto</span> := <span class="id" title="tactic">repeat</span> (<span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">try</span> (<span class="id" title="tactic">tauto</span> || <span class="id" title="var">eassumption</span>)).<br/>
 
 <br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">dest_or</span> <span class="id" title="var">H</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">type</span> <span class="id" title="keyword">of</span> <span class="id" title="var">H</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#False"><span class="id" title="inductive">False</span></a>     =&gt; <span class="id" title="var">contradiction</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">_</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#f031fe1957c4a4a8e217aa46af2b4e25"><span class="id" title="notation">\/</span></a> <span class="id" title="var">_</span> =&gt; <span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">H</span>|<span class="id" title="var">H</span>]; <span class="id" title="var">dest_or</span> <span class="id" title="var">H</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">_</span>     =&gt; <span class="id" title="tactic">idtac</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">dest_or_any</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">H</span>: <span class="id" title="var">_</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#f031fe1957c4a4a8e217aa46af2b4e25"><span class="id" title="notation">\/</span></a> <span class="id" title="var">_</span> |- <span class="id" title="var">_</span> =&gt; <span class="id" title="var">dest_or</span> <span class="id" title="var">H</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">_</span> =&gt; <span class="id" title="tactic">idtac</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="comment">(*&nbsp;Destruct&nbsp;a&nbsp;hypothesis&nbsp;H&nbsp;:&nbsp;x&nbsp;∈&nbsp;l&nbsp;entirely.<br/>
+&nbsp;&nbsp;&nbsp;I.e.&nbsp;reduce&nbsp;the&nbsp;goal&nbsp;to&nbsp;length&nbsp;l&nbsp;many&nbsp;subgoals<br/>
+&nbsp;&nbsp;&nbsp;where&nbsp;the&nbsp;ith&nbsp;subgoal&nbsp;is&nbsp;the&nbsp;same&nbsp;but&nbsp;with&nbsp;H&nbsp;replaced&nbsp;by&nbsp;x&nbsp;=&nbsp;y_i<br/>
+&nbsp;&nbsp;&nbsp;where&nbsp;y_i&nbsp;is&nbsp;the&nbsp;ith&nbsp;element&nbsp;of&nbsp;l.&nbsp;*)</span><br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">dest_in_list</span> <span class="id" title="var">H</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="var">dest_or</span> <span class="id" title="var">H</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">dest_in_list_any</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">H</span> : <span class="id" title="var">_</span> <a class="idref" href="DC.ListSetNotations.html#b018a66e1e5f3a3e69df51e53be82ded"><span class="id" title="notation">∈</span></a> <span class="id" title="var">_</span> |- <span class="id" title="var">_</span> =&gt; <span class="id" title="var">dest_in_list</span> <span class="id" title="var">H</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">_</span> =&gt; <span class="id" title="tactic">idtac</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">clean_dcl</span> <span class="id" title="var">a</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'&lt;&gt;'_x"><span class="id" title="notation">&lt;&gt;</span></a> <span class="id" title="var">a</span> |- <span class="id" title="var">_</span> ] =&gt; <span class="id" title="tactic">clear</span> <span class="id" title="var">H</span><br/>
@@ -79,7 +109,7 @@
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-<span class="id" title="keyword">Ltac</span> <span class="id" title="var">dec_destruct_List_In</span> <span class="id" title="var">Aeq_dec</span> <span class="id" title="var">a</span> :=<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">dest_in_list_eqdec_rec</span> <span class="id" title="var">Aeq_dec</span> <span class="id" title="var">a</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> | <span class="id" title="var">H</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#In"><span class="id" title="definition">List.In</span></a> <span class="id" title="var">a</span> ?<span class="id" title="var">l</span> |- <span class="id" title="var">_</span> =&gt; <span class="id" title="tactic">unfold</span> <span class="id" title="var">l</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span> <span class="id" title="keyword">end</span>);<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| [ <span class="id" title="var">H</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#In"><span class="id" title="definition">List.In</span></a> <span class="id" title="var">a</span> ?<span class="id" title="var">l</span> |- <span class="id" title="var">_</span> ] =&gt; <span class="id" title="var">dcl_rec</span> <span class="id" title="var">Aeq_dec</span> <span class="id" title="var">a</span> <span class="id" title="var">l</span><br/>
@@ -88,30 +118,6 @@
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">destruct_list_easy</span> <span class="id" title="var">l</span> <span class="id" title="var">u</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">repeat</span> <span class="id" title="keyword">let</span> <span class="id" title="var">a</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">u</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">l</span> <span class="id" title="keyword">as</span> [|<span class="id" title="var">a</span> <span class="id" title="var">l</span>]; <span class="id" title="tactic">try</span> (<span class="id" title="tactic">discriminate</span> || <span class="id" title="tactic">tauto</span>).<br/>
-
-<br/>
-<span class="id" title="keyword">Ltac</span> <span class="id" title="var">destruct_or</span> :=<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">P</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#f031fe1957c4a4a8e217aa46af2b4e25"><span class="id" title="notation">\/</span></a> ?<span class="id" title="var">Q</span> |- <span class="id" title="var">_</span> ]  =&gt; <span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span>; [<span class="id" title="tactic">idtac</span> | <span class="id" title="var">destruct_or</span>]; <span class="id" title="tactic">try</span> <span class="id" title="tactic">tauto</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">_</span> =&gt; <span class="id" title="tactic">idtac</span><br/>
-&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
-
-<br/>
-<span class="id" title="keyword">Ltac</span> <span class="id" title="var">destruct_List_In</span> :=<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#In"><span class="id" title="definition">List.In</span></a> ?<span class="id" title="var">x</span> (?<span class="id" title="var">a</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Datatypes.html#::list_scope:x_'::'_x"><span class="id" title="notation">::</span></a> ?<span class="id" title="var">l</span>) |- <span class="id" title="var">_</span> ] =&gt; <span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="var">destruct_or</span><br/>
-&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
-
-<br/>
-<span class="id" title="keyword">Ltac</span> <span class="id" title="var">destruct_or_name</span> <span class="id" title="var">H</span> :=<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">type</span> <span class="id" title="keyword">of</span> <span class="id" title="var">H</span> <span class="id" title="keyword">with</span><br/>
-&nbsp;&nbsp;| <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#False"><span class="id" title="inductive">False</span></a>       =&gt; <span class="id" title="var">contradiction</span><br/>
-&nbsp;&nbsp;| ?<span class="id" title="var">P</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#f031fe1957c4a4a8e217aa46af2b4e25"><span class="id" title="notation">\/</span></a> ?<span class="id" title="var">Q</span> =&gt; <span class="id" title="keyword">let</span> <span class="id" title="var">H'</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">H</span> <span class="id" title="tactic">in</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">H'</span> | <span class="id" title="var">H</span>]; [  | <span class="id" title="var">destruct_or_name</span> <span class="id" title="var">H</span> ]; <span class="id" title="tactic">try</span> <span class="id" title="tactic">tauto</span><br/>
-&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
-
-<br/>
-<span class="id" title="keyword">Ltac</span> <span class="id" title="var">destruct_List_In_name</span> <span class="id" title="var">H</span> := <span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="var">destruct_or_name</span> <span class="id" title="var">H</span>.<br/>
 
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">forall_list_tauto_name</span> <span class="id" title="var">H</span> :=<br/>
@@ -146,7 +152,7 @@
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;|- <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Lists.List.html#incl"><span class="id" title="definition">incl</span></a> ?<span class="id" title="var">l</span> ?<span class="id" title="var">l'</span> =&gt;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">x</span> := <span class="id" title="tactic">fresh</span> "x" <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">Hx</span> := <span class="id" title="tactic">fresh</span> "H" <span class="id" title="var">x</span> <span class="id" title="tactic">in</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">x</span> <span class="id" title="var">Hx</span>; <span class="id" title="var">destruct_List_In_name</span> <span class="id" title="var">Hx</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">x</span> <span class="id" title="var">Hx</span>; <span class="id" title="var">dest_in_list</span> <span class="id" title="var">Hx</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> <span class="id" title="var">H</span> : <span class="id" title="var">_</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="var">x</span> |- <span class="id" title="var">_</span> =&gt; <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H</span>; <span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">tauto</span> <span class="id" title="keyword">end</span><br/>
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 

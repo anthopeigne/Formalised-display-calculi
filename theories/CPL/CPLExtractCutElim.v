@@ -48,11 +48,9 @@ Proof.
   confirm_derr d.
 Defined.
 
-(*
 Extract Inductive list => "list" [ "[]" "(::)" ].
 Extract Inductive bool => "bool" [ "true" "false" ].
 Extract Inductive sumbool => "bool" [ "true" "false" ].
 Extract Inductive prod => "(*)"  [ "(,)" ].
 
-Extraction "cpl_cutelim.ml" cpl_cutElim derr_impcon_impr.
-*)
+Extraction "cpl_cutelim.ml" CPL_cutElim derr_impcon_impr.

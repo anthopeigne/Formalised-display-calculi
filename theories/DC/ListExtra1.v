@@ -18,9 +18,6 @@ Require Import Tactics.
 Require Import EqDec.
 
 Definition comp {A B C : Type} (g : B -> C) (f : A -> B) : A -> C := fun x => g (f x).
-(*Notation "g ∘ f" := (compose g f).*)
-
-
 
 Set Implicit Arguments.
 

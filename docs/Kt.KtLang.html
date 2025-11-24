@@ -142,7 +142,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intro</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">A</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">tauto</span>);<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">intros</span> <span class="id" title="var">B</span> <span class="id" title="var">HB</span>; <span class="id" title="tactic">simpl</span> <a class="idref" href="Kt.KtLang.html#Kt_LOG.ipse"><span class="id" title="definition">ipse</span></a> <span class="id" title="tactic">in</span> <span class="id" title="var">HB</span>;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">dec_destruct_List_In</span> <a class="idref" href="Kt.KtLang.html#Kt_LOG.fml_eq_dec"><span class="id" title="lemma">fml_eq_dec</span></a> <span class="id" title="var">B</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">dest_in_list_eqdec_rec</span> <a class="idref" href="Kt.KtLang.html#Kt_LOG.fml_eq_dec"><span class="id" title="lemma">fml_eq_dec</span></a> <span class="id" title="var">B</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heq</span>; <span class="id" title="tactic">assumption</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
 
@@ -298,7 +298,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intro</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">A</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">tauto</span>);<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">intros</span> <span class="id" title="var">B</span> <span class="id" title="var">HB</span>; <span class="id" title="tactic">simpl</span> <a class="idref" href="Kt.KtLang.html#Kt_STR.ipse"><span class="id" title="definition">ipse</span></a> <span class="id" title="tactic">in</span> <span class="id" title="var">HB</span>;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">dec_destruct_List_In</span> <a class="idref" href="Kt.KtLang.html#Kt_STR.str_eq_dec"><span class="id" title="lemma">str_eq_dec</span></a> <span class="id" title="var">B</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">dest_in_list_eqdec_rec</span> <a class="idref" href="Kt.KtLang.html#Kt_STR.str_eq_dec"><span class="id" title="lemma">str_eq_dec</span></a> <span class="id" title="var">B</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heq</span>; <span class="id" title="tactic">assumption</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
 

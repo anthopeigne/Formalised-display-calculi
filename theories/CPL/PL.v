@@ -61,75 +61,6 @@ Module PL_LOG.
     | _           => []
     end.
 
-
-(*
-  Fixpoint fml_size (A : formula) : nat :=
-    match A with
-    | Atf p       => 0
-    | FVf V       => 0
-    | Top         => 0
-    | Bot         => 0
-    | Neg A0      => 1 + fml_size A0
-    | Imp A1 A2   => 1 + fml_size A1 + fml_size A2
-    | Dis A1 A2   => 1 + fml_size A1 + fml_size A2
-    | Con A1 A2   => 1 + fml_size A1 + fml_size A2
-    end.
-
-Program Fixpoint bla (n:nat) {measure n} :=
-match n with
-| 0 => 0
-| S n' => S (bla n')
-end.
-
-Lemma bla_eq : forall n, bla n = match n with | 0 => 0 | S n' => S (bla n') end.
-Proof.
-  intro n. destruct n. reflexivity. unfold bla.
-  rewrite fix_sub_eq; simpl; fold (bla n). reflexivity. intros.
-  simpl. destruct x. reflexivity.
-  simpl. rewrite H. reflexivity.
-Qed.
-
-  Program Fixpoint ipse_rect (P : formula -> Type)
-    (P_IS : forall A, (forall B, B ∈ (ipse A) -> P B) -> P A) (A : formula)
-    {measure (fml_size A)} : P A :=
-    P_IS A (fun B HB => ipse_rect P P_IS B).
-  Next Obligation.
-    destruct A; simpl ipse in HB;
-    dest_in_list_eqdec fml_eq_dec HB;
-    rewrite Heq; simpl; lia.
-  Defined.
-*)
-
-(*
-  Theorem ipse_rect (P : formula -> Type) :
-    (forall A, (forall B, B ∈ (ipse A) -> P B) -> P A) -> forall A, P A.
-  Proof.
-    intro H. induction A; apply H;
-      try (simpl; tauto);
-      try (intros B HB; simpl ipse in HB;
-           dest_in_list_eqdec fml_eq_dec HB;
-           rewrite Heq; assumption).
-  Defined.
-
-  (* Requires functional extensionality *)
-  Theorem ipse_rect_cmp :
-    forall P P_IS A, ipse_rect P P_IS A = P_IS A (fun B HB => ipse_rect P P_IS B).
-  Proof.
-    intros P f. induction A;
-    simpl; apply f_equal; extensionality B; extensionality HB;
-    try contradiction; dest_or HB; try contradiction;
-    unfold eq_dec_in_list.
-    all:
-    repeat match goal with
-      |- context[match ?C with _ => _ end] =>
-          let Heq := fresh "Heq" in
-          let Hneq := fresh "Hneq" in
-          destruct C as [Heq|Hneq];
-          try (exfalso; apply not_eq_sym in Hneq; contradiction)
-    end; rewrite Heq; reflexivity.
-  Qed.
-*)
-
   Theorem ipse_rect (P : formula -> Type) :
     (forall A, (forall B, B ∈ (ipse A) -> P B) -> P A) -> forall A, P A.
   Proof.
@@ -288,36 +219,6 @@ Module CPL_STR.
     | Comma X1 X2 => [X1; X2]
     | _           => []
     end.
-
-(*
-  Theorem ipse_rect (P : structr -> Type) :
-    (forall A, (forall B, B ∈ (ipse A) -> P B) -> P A) -> forall A, P A.
-  Proof.
-    intro H. induction A; apply H;
-      try (simpl; tauto);
-      try (intros B HB; simpl ipse in HB;
-           dest_in_list_eqdec str_eq_dec HB;
-           rewrite Heq; assumption).
-  Defined.
-
-  (* Requires functional extensionality *)
-  Theorem ipse_rect_cmp :
-    forall P P_IS A, ipse_rect P P_IS A = P_IS A (fun B HB => ipse_rect P P_IS B).
-  Proof.
-    intros P f. induction A;
-    simpl; apply f_equal; extensionality B; extensionality HB;
-    try contradiction; dest_or HB; try contradiction;
-    unfold eq_dec_in_list.
-    all:
-    repeat match goal with
-      |- context[match ?C with _ => _ end] =>
-          let Heq := fresh "Heq" in
-          let Hneq := fresh "Hneq" in
-          destruct C as [Heq|Hneq];
-          try (exfalso; apply not_eq_sym in Hneq; contradiction)
-    end; rewrite Heq; reflexivity.
-  Qed.
-*)
 
   Theorem ipse_rect (P : structr -> Type) :
     (forall A, (forall B, B ∈ (ipse A) -> P B) -> P A) -> forall A, P A.

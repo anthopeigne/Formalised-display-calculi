@@ -51,7 +51,7 @@ Section Sequents.
     - intros [H1 H2]. rewrite H1, H2. reflexivity.
   Qed.
 
-  Definition Seqmap (f : trf structr) : trf sequent :=
+  Definition Seqmap (f : structr -> structr) : sequent -> sequent :=
     fun S => match S with X ⊢ Y => f X ⊢ f Y end.
 
   Definition antec (s : sequent) : structr := match s with X ⊢ Y => X end.

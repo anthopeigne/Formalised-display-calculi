@@ -1,4 +1,3 @@
-(*Require Import Ensembles.*)
 Require Import List.
 Import ListNotations.
 Require Import ListSetNotations.
@@ -51,14 +50,6 @@ Ltac dest_or_any :=
    where y_i is the ith element of l. *)
 Ltac dest_in_list H :=
   simpl in H; dest_or H.
-(*
-  match type of H with
-  | ?x ∈ [] => contradiction
-  | ?x ∈ (?y :: ?ys) =>
-      let Heq := fresh "Heq" in
-      destruct H as [Heq|H]; [|dest_in_list H]
-  end.
-*)
 
 Ltac dest_in_list_any :=
   match goal with
@@ -91,29 +82,6 @@ Ltac dest_in_list_eqdec_rec Aeq_dec a :=
 Ltac destruct_list_easy l u :=
   repeat let a := fresh u in destruct l as [|a l]; try (discriminate || tauto).
 
-
-
-(*
-Ltac destruct_or :=
-  match goal with
-    | [ H : ?P \/ ?Q |- _ ]  => destruct H; [idtac | destruct_or]; try tauto
-    | _ => idtac
-  end.
-
-Ltac destruct_List_In :=
-  match goal with
-    | [ H : List.In ?x (?a :: ?l) |- _ ] => simpl in H; destruct_or
-  end.
-
-Ltac destruct_or_name H :=
-  match type of H with
-  | False       => contradiction
-  | ?P \/ ?Q => let H' := fresh H in
-              destruct H as [H' | H]; [  | destruct_or_name H ]; try tauto
-  end.
-
-Ltac destruct_List_In_name H := simpl in H; destruct_or_name H.
-*)
 
 Ltac forall_list_tauto_name H :=
   try contradiction; try (rewrite <- H); try (simpl; tauto);

@@ -41,6 +41,7 @@
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Init.Datatypes.html#"><span class="id" title="library">Datatypes</span></a>.<br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.micromega.Lia.html#"><span class="id" title="library">Lia</span></a>.<br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Logic.FunctionalExtensionality.html#"><span class="id" title="library">FunctionalExtensionality</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.18.0/stdlib//Coq.Program.Program.html#"><span class="id" title="library">Program</span></a>.<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="DC.EqDec.html#"><span class="id" title="library">EqDec</span></a>.<br/>
@@ -103,7 +104,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intro</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">A</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">tauto</span>);<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">intros</span> <span class="id" title="var">B</span> <span class="id" title="var">HB</span>; <span class="id" title="tactic">simpl</span> <a class="idref" href="CPL.PL.html#PL_LOG.ipse"><span class="id" title="definition">ipse</span></a> <span class="id" title="tactic">in</span> <span class="id" title="var">HB</span>;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">dec_destruct_List_In</span> <a class="idref" href="CPL.PL.html#PL_LOG.fml_eq_dec"><span class="id" title="lemma">fml_eq_dec</span></a> <span class="id" title="var">B</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">dest_in_list_eqdec_rec</span> <a class="idref" href="CPL.PL.html#PL_LOG.fml_eq_dec"><span class="id" title="lemma">fml_eq_dec</span></a> <span class="id" title="var">B</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heq</span>; <span class="id" title="tactic">assumption</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
 
@@ -288,7 +289,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intro</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">A</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">tauto</span>);<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">intros</span> <span class="id" title="var">B</span> <span class="id" title="var">HB</span>; <span class="id" title="tactic">simpl</span> <a class="idref" href="CPL.PL.html#CPL_STR.ipse"><span class="id" title="definition">ipse</span></a> <span class="id" title="tactic">in</span> <span class="id" title="var">HB</span>;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">dec_destruct_List_In</span> <a class="idref" href="CPL.PL.html#CPL_STR.str_eq_dec"><span class="id" title="lemma">str_eq_dec</span></a> <span class="id" title="var">B</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">dest_in_list_eqdec_rec</span> <a class="idref" href="CPL.PL.html#CPL_STR.str_eq_dec"><span class="id" title="lemma">str_eq_dec</span></a> <span class="id" title="var">B</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heq</span>; <span class="id" title="tactic">assumption</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
 

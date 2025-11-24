@@ -44,11 +44,9 @@ Proof.
                   [Der (£ ◻p ⊢ £ ◻p) (frefl (◻p)) []]]]).
 Defined.
 
-(*
 Extract Inductive list => "list" [ "[]" "(::)" ].
 Extract Inductive bool => "bool" [ "true" "false" ].
 Extract Inductive sumbool => "bool" [ "true" "false" ].
 Extract Inductive prod => "(*)"  [ "(,)" ].
 
 Extraction "Kt_cutelim.ml" Kt_cutElim derr_box_con_dis.
-*)

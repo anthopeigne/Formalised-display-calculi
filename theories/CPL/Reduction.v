@@ -52,7 +52,8 @@ Section Reduction.
   Definition streduc (s : sequent) : sequent :=
     match s with X ⊢ Y => strStreduc X ⊢ strStreduc Y end.
 
-  Definition ruleStreduc : rule -> rule := pscmap streduc.
+  Definition ruleStreduc : rule -> rule :=
+    fun r => match r with (ps, c) => (map streduc ps, streduc c) end.
 
   (* ∗-reducedness *)
   Fixpoint strStreduced (X : structr) : Prop :=
@@ -197,9 +198,11 @@ Section Reduction.
 
   Definition reduc (s : sequent) : sequent := streduc (dreduc s).
 
-  Definition ruleDreduc : rule -> rule := pscmap dreduc.
+  Definition ruleDreduc : rule -> rule :=
+    fun r => match r with (ps, c) => (map dreduc ps, dreduc c) end.
 
-  Definition ruleReduc : rule -> rule := pscmap reduc.
+  Definition ruleReduc : rule -> rule :=
+    fun r => match r with (ps, c) => (map reduc ps, reduc c) end.
 
   Inductive dreduced (l : list (sstructr)) : Prop :=
     | len2_dreduced : length l = 2 -> dreduced l
